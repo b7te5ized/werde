@@ -5,13 +5,13 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', onKey);
-    const first = ref.current?.querySelector<HTMLElement>('input, select, button:not(.sheet-close)');
-    first?.focus({ preventScroll: true });
+    // Focus the sheet itself, not a text field: no keyboard popping up on phones.
+    ref.current?.focus({ preventScroll: true });
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" role="dialog" aria-modal="true" aria-label={title} ref={ref} onClick={(e) => e.stopPropagation()}>
+      <div className="sheet" role="dialog" aria-modal="true" aria-label={title} ref={ref} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <div className="sheet-handle" aria-hidden="true" />
         <header className="sheet-head">
           <h2>{title}</h2>

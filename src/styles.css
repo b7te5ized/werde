@@ -487,3 +487,6 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .goal-slot.lifted { z-index: 5; }
 .goal-slot.lifted .goal-card { box-shadow: 0 12px 30px rgba(60, 50, 90, .22); transform: scale(1.02); transition: transform .15s ease; }
 .theme-goals.dragging .goal-slot:not(.lifted) { transition: none; }
+.sheet:focus { outline: none; }
+.detail-actions .edit-btn { display: inline-block; width: auto; padding: 12px 20px; font-size: 16px; border-radius: 16px; }
+.detail-big { color: var(--ink); }
