@@ -19,21 +19,27 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
     <article className="goal-wrap">
       <div className={`goal-card${goal.paused ? ' paused' : ''}${reached ? ' reached' : ''}`}>
         <Fill pct={todayFill(goal, data.logs)} color={sw.base} category={categoryOf(goal)} />
-        <button className="goal-main" onClick={onOpen}
-          aria-label={`${goal.name}, ${label} ${PERIOD_LABEL[goal.period]}${r.streak >= 2 ? `, ${r.streak} ${UNIT_WORD[goal.period][1]} dabei` : ''}. Details öffnen`}>
-          <span className="goal-name">{goal.name}</span>
-          <span className="goal-meta">
-            {fmt(p.amount)} / {fmt(goal.target)} {goal.unit}
-            {goal.period !== 'day' && ` · ${PERIOD_LABEL[goal.period]}`}
-            {!goal.paused && goal.direction === 'more' && r.streak >= 2 && <span className="streak"> · {r.streak} {UNIT_WORD[goal.period][1]}</span>}
-          </span>
-          {goal.cue && <span className="goal-cue">{cueText(goal.cue)}</span>}
-        </button>
-        {!goal.paused && (
-          <button className="log-btn no-drag" onClick={() => log(goal.id, goal.step)} aria-label={`${fmt(goal.step)} ${goal.unit} zu ${goal.name} hinzufügen`}>
-            +{fmt(goal.step)}
+        <div className="goal-main">
+          <button className="goal-open" onClick={onOpen}
+            aria-label={`${goal.name}, ${label} ${PERIOD_LABEL[goal.period]}${r.streak >= 2 ? `, ${r.streak} ${UNIT_WORD[goal.period][1]} dabei` : ''}. Details öffnen`}>
+            <span className="goal-name">{goal.name}</span>
           </button>
-        )}
+          <span className="goal-meta">
+            <span className="goal-amount" onClick={onOpen}>
+              {fmt(p.amount)} / {fmt(goal.target)} {goal.unit}
+              {goal.period !== 'day' && ` · ${PERIOD_LABEL[goal.period]}`}
+              {!goal.paused && goal.direction === 'more' && r.streak >= 2 && <span className="streak"> · {r.streak} {UNIT_WORD[goal.period][1]}</span>}
+            </span>
+            {!goal.paused && (
+              <button className="add-btn no-drag" onClick={() => log(goal.id, goal.step)}
+                aria-label={`${fmt(goal.step)} ${goal.unit} zu ${goal.name} hinzufügen`}>
+                + {fmt(goal.step)} {goal.unit}
+              </button>
+            )}
+          </span>
+          {goal.cue && <span className="goal-cue" onClick={onOpen}>{cueText(goal.cue)}</span>}
+        </div>
+        <button className="goal-pct" onClick={onOpen} tabIndex={-1} aria-hidden="true">{Math.round(p.pct * 100)}%</button>
       </div>
     </article>
   );
