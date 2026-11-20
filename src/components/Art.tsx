@@ -1,5 +1,3 @@
-import { Cat, type CatPose } from './Cat';
-
 /* Painterly SVG illustrations. The gouache filter warps edges and adds soft brush streaks. */
 
 export function ArtDefs() {
@@ -28,36 +26,6 @@ export function ArtDefs() {
   );
 }
 
-export function Puff({ size = 120, mood = 'calm' }: { size?: number; mood?: 'calm' | 'happy' | 'sleepy' }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true">
-      <g filter="url(#gouache)">
-        <ellipse cx="60" cy="104" rx="36" ry="7" fill="#5c9a58" opacity="0.35" />
-        <ellipse cx="42" cy="34" rx="15" ry="20" fill="#fdf8e8" />
-        <ellipse cx="76" cy="32" rx="15" ry="21" fill="#fdf8e8" />
-        <ellipse cx="60" cy="70" rx="38" ry="34" fill="#fffbee" />
-        <ellipse cx="44" cy="50" rx="12" ry="9" fill="#e6f1fb" opacity="0.55" />
-        <ellipse cx="74" cy="22" rx="7" ry="9" fill="#fbeec6" opacity="0.6" />
-        <ellipse cx="78" cy="80" rx="14" ry="10" fill="#fbeec6" opacity="0.8" />
-        <ellipse cx="44" cy="96" rx="11" ry="7" fill="#fdf6df" />
-        <ellipse cx="76" cy="96" rx="11" ry="7" fill="#fdf6df" />
-      </g>
-      {mood === 'sleepy' ? (
-        <g stroke="#7a4a35" strokeWidth="2.4" strokeLinecap="round" fill="none">
-          <path d="M45 68q4 3 8 0" /><path d="M67 68q4 3 8 0" />
-        </g>
-      ) : (
-        <g fill="#7a4a35">
-          <ellipse cx="49" cy="67" rx="3" ry={mood === 'happy' ? 2.2 : 3.2} />
-          <ellipse cx="71" cy="67" rx="3" ry={mood === 'happy' ? 2.2 : 3.2} />
-        </g>
-      )}
-      <ellipse cx="42" cy="76" rx="5" ry="3" fill="#f6b3c3" opacity="0.6" />
-      <ellipse cx="78" cy="76" rx="5" ry="3" fill="#f6b3c3" opacity="0.6" />
-    </svg>
-  );
-}
-
 export function Flower({ x, y, r, petal, center = '#f5cf4a' }: { x: number; y: number; r: number; petal: string; center?: string }) {
   const petals = [0, 72, 144, 216, 288];
   return (
@@ -81,8 +49,8 @@ export function Sparkle({ x, y, s, color = '#fff6c9' }: { x: number; y: number; 
 }
 
 /** The painted meadow behind the greeting: the "clearing". */
-export function Meadow({ mood, pose, phase = 'day', weather = null }: {
-  mood: 'calm' | 'happy' | 'sleepy'; pose: CatPose; phase?: 'dawn' | 'day' | 'dusk' | 'night'; weather?: string | null;
+export function Meadow({ phase = 'day', weather = null }: {
+  phase?: 'dawn' | 'day' | 'dusk' | 'night'; weather?: string | null;
 }) {
   const night = phase === 'night';
   const cloudy = weather === 'cloud' || weather === 'rain' || weather === 'storm' || weather === 'snow';
@@ -138,9 +106,6 @@ export function Meadow({ mood, pose, phase = 'day', weather = null }: {
         </g>
       )}
 
-      <g transform="translate(134 86)">
-        <Cat size={132} pose={pose} mood={mood} />
-      </g>
     </svg>
   );
 }

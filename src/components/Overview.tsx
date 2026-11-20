@@ -4,7 +4,6 @@ import { PALETTE } from '../palette';
 import { addDays, dayAmount, dayKey, fmt, goalProgress, logsOnDay, periodStart } from '../progress';
 import { useStore } from '../store';
 import { Segmented } from './Sheet';
-import { Cat } from './Cat';
 import { isFrozenDay, monthStats } from '../consistency';
 
 type Mode = 'week' | 'month';
@@ -56,7 +55,6 @@ export function Overview() {
 
       {goals.length === 0 ? (
         <section className="empty card">
-          <Cat size={100} />
           <h2>Noch nichts zum Zurückblicken</h2>
           <p>Sobald du etwas notierst, erscheint es hier.</p>
         </section>

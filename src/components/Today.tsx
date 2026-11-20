@@ -1,10 +1,8 @@
 import { dayKey, greeting } from '../progress';
-import { goalProgress } from '../progress';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import type { Goal, Theme } from '../types';
 import { Meadow, SeedlingEmpty } from './Art';
-import { affirmationFor, catPoseFor } from './Cat';
 import { backupDue, exportData, POSTPONE_TO } from '../backup';
 import { WEATHER_WORDS, type Sky } from '../sky';
 import { GoalCard } from './GoalCard';
@@ -23,18 +21,14 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
   const inClaude = !!(window as unknown as { claude?: { use?: unknown } }).claude?.use;
   const resting = data.restDays.includes(dayKey(new Date()));
   const now = new Date();
-  const h = now.getHours();
   const active = data.goals.filter((g) => !g.paused);
-  const bloomed = active.filter((g) => g.direction === 'more' && goalProgress(g, data.logs).reached).length;
-  const mood = h >= 22 || h < 6 ? 'sleepy' : bloomed > 0 ? 'happy' : 'calm';
-  const pose = catPoseFor(now, sky.phase === 'night');
   const name = data.settings.name.trim();
   const showBackup = sync === 'local' && !inClaude && backupDue(data);
 
   return (
     <main className="view">
       <section className="clearing">
-        <Meadow mood={mood} pose={pose} phase={sky.phase} weather={sky.weather} />
+        <Meadow phase={sky.phase} weather={sky.weather} />
       </section>
       <header className="greet">
         <div className="greet-row">
@@ -45,7 +39,6 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
           {now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
           {sky.weather && <> · {sky.temp !== null && `${sky.temp} °C, `}{WEATHER_WORDS[sky.weather]}</>}
         </p>
-        {pose === 'morning' && <p className="affirm">{affirmationFor(now)}</p>}
       </header>
 
       {sync === 'local' && inClaude && (

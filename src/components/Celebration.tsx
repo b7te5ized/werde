@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import { Sparkle } from './Art';
-import { Cat } from './Cat';
 
 const CONFETTI = ['#f294ad', '#f3c93f', '#b59ae6', '#86c0e6', '#8cc265', '#fbe0e8', '#fff3b0'];
 
@@ -79,7 +78,6 @@ export function Celebration() {
             <Sparkle x={40} y={40} s={0.5} color="#b59ae6" />
           </g>
         </svg>
-        <span className="celebrate-puff"><Cat size={84} mood="happy" /></span>
       </div>
       <div className="celebrate-text">
         <p className="celebrate-eyebrow">In voller Blüte</p>
