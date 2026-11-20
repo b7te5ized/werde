@@ -1,0 +1,20 @@
+{
+  "name": "werde",
+  "short_name": "werde",
+  "description": "Wachsen in deinem Tempo, auf deine Weise.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf6e4",
+  "theme_color": "#cfe6b4",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Quick log", "short_name": "Log", "url": "./#quick", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
