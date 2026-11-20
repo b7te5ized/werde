@@ -4,7 +4,7 @@ import { PALETTE } from '../palette';
 import { addDays, dayAmount, dayKey, fmt, goalProgress, logsOnDay, periodStart } from '../progress';
 import { useStore } from '../store';
 import { Segmented } from './Sheet';
-import { Puff } from './Art';
+import { Cat } from './Cat';
 import { isFrozenDay, monthStats } from '../consistency';
 
 type Mode = 'week' | 'month';
@@ -56,7 +56,7 @@ export function Overview() {
 
       {goals.length === 0 ? (
         <section className="empty card">
-          <Puff size={100} mood="calm" />
+          <Cat size={100} />
           <h2>Noch nichts zum Zurückblicken</h2>
           <p>Sobald du etwas notierst, erscheint es hier.</p>
         </section>
@@ -104,7 +104,7 @@ function WeekView({ start, goals, themes, logs, restDays, freezes }: { start: Da
               const before = addDays(d, 1).getTime() <= g.createdAt;
               return (
                 <DayCell key={d.getTime()} goal={g} amount={amt} future={future || before}
-                  frozen={!future && !before && amt === 0 && isFrozenDay({ restDays, freezes }, g.id, d)}
+                  frozen={!before && amt === 0 && isFrozenDay({ restDays, freezes }, g.id, d)}
                   today={dayKey(d) === today} base={sw.base} soft={sw.soft}
                   label={`${d.toLocaleDateString('de-DE', { weekday: 'long' })}: ${fmt(amt)} ${g.unit}`} />
               );

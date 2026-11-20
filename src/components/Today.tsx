@@ -4,8 +4,11 @@ import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import type { Goal, Theme } from '../types';
 import { Meadow, SeedlingEmpty } from './Art';
+import { affirmationFor, catPoseFor } from './Cat';
+import { backupDue, exportData, POSTPONE_TO } from '../backup';
 import { WEATHER_WORDS, type Sky } from '../sky';
 import { GoalCard } from './GoalCard';
+import { RestoreButton } from './RestoreButton';
 
 interface Props {
   sky: Sky;
@@ -16,7 +19,7 @@ interface Props {
 }
 
 export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: Props) {
-  const { data, sync, toggleRestDay } = useStore();
+  const { data, sync, toggleRestDay, saveSettings } = useStore();
   const inClaude = !!(window as unknown as { claude?: { use?: unknown } }).claude?.use;
   const resting = data.restDays.includes(dayKey(new Date()));
   const now = new Date();
@@ -24,21 +27,25 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
   const active = data.goals.filter((g) => !g.paused);
   const bloomed = active.filter((g) => g.direction === 'more' && goalProgress(g, data.logs).reached).length;
   const mood = h >= 22 || h < 6 ? 'sleepy' : bloomed > 0 ? 'happy' : 'calm';
+  const pose = catPoseFor(now, sky.phase === 'night');
+  const name = data.settings.name.trim();
+  const showBackup = sync === 'local' && !inClaude && backupDue(data);
 
   return (
     <main className="view">
       <section className="clearing">
-        <Meadow mood={mood} phase={sky.phase} weather={sky.weather} />
+        <Meadow mood={mood} pose={pose} phase={sky.phase} weather={sky.weather} />
       </section>
       <header className="greet">
         <div className="greet-row">
-          <h1>{greeting(now)}</h1>
+          <h1>{greeting(now)}{name && <>,<span className="greet-name">{name}</span></>}</h1>
           {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Schnell notieren</button>}
         </div>
         <p>
           {now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
           {sky.weather && <> · {sky.temp !== null && `${sky.temp} °C, `}{WEATHER_WORDS[sky.weather]}</>}
         </p>
+        {pose === 'morning' && <p className="affirm">{affirmationFor(now)}</p>}
       </header>
 
       {sync === 'local' && inClaude && (
@@ -46,11 +53,20 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
           <p><b>Wird nicht dauerhaft gespeichert.</b> Melde dich bei Claude an und öffne werde über einen persönlichen Einladungslink, damit deine Einträge in deinem Konto bleiben.</p>
         </section>
       )}
+      {showBackup && (
+        <section className="card backup-note" role="status">
+          <p>Deine Einträge liegen nur auf diesem Gerät. Magst du eine Kopie sichern?</p>
+          <div className="row">
+            <button className="secondary small-btn" onClick={async () => { if (await exportData(data)) saveSettings({ lastBackupAt: Date.now() }); }}>Kopie sichern</button>
+            <button className="text-btn" onClick={() => saveSettings({ backupSnoozeUntil: POSTPONE_TO() })}>Später</button>
+          </div>
+        </section>
+      )}
       {resting && (
         <section className="card rest-banner" role="status">
           <span aria-hidden="true" style={{ fontSize: 26 }}>🌙</span>
           <p>Ruhetag. Nichts geht verloren.</p>
-          <button className="text-btn" onClick={() => toggleRestDay(new Date())}>End</button>
+          <button className="text-btn" onClick={() => toggleRestDay(new Date())}>Beenden</button>
         </section>
       )}
       {data.themes.length === 0 ? (
@@ -59,6 +75,7 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
           <h2>Das ist deine Lichtung</h2>
           <p>Hier ist nichts für dich vorgegeben. Pflanze ein erstes Ziel, mit deinen Worten und deinem Maß.</p>
           <button className="primary" onClick={() => onNewGoal()}>Ziel pflanzen</button>
+          {!inClaude && <RestoreButton className="text-btn" label="Ich habe eine Sicherung" />}
         </section>
       ) : (
         <>

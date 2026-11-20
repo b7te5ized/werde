@@ -8,7 +8,7 @@ const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v5' : 'werde.data.v1';
 
 const DEFAULT_SETTINGS: Settings = {
   reminderHours: 5, quietStart: '22:00', quietEnd: '07:00', celebrations: true,
-  remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', weatherOn: false, breathingMoment: false, restUntil: 0,
+  remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', weatherOn: false, breathingMoment: false, restUntil: 0, name: '', lastBackupAt: 0, backupSnoozeUntil: 0,
 };
 
 function empty(): Data {
@@ -246,7 +246,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         return {
           ...d,
           restDays: on ? d.restDays.filter((x) => x !== k) : [...d.restDays, k],
-          settings: { ...d.settings, restUntil: on ? 0 : tomorrow },
+          settings: dayKey(new Date()) === k ? { ...d.settings, restUntil: on ? 0 : tomorrow } : d.settings,
         };
       });
     },
@@ -259,7 +259,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       });
     },
     saveSettings: (s) => setData((d) => ({ ...d, settings: { ...d.settings, ...s } })),
-    replaceAll: (nd) => change(() => ({ ...empty(), ...nd }), 'Daten übernommen'),
+    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now() }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
   };
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>;

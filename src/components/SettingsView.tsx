@@ -1,16 +1,17 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import { RestoreButton } from './RestoreButton';
 import { enableNotifications } from '../useReminders';
 import { isStandalone } from '../pwa';
 import { dayKey } from '../progress';
+import { exportData } from '../backup';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
-import type { Data, Theme } from '../types';
+import type { Theme } from '../types';
 
 export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void }) {
-  const { data, sync, saveSettings, replaceAll, toggleRestDay } = useStore();
+  const { data, sync, saveSettings, toggleRestDay } = useStore();
   const restingToday = data.restDays.includes(dayKey(new Date()));
   const s = data.settings;
-  const file = useRef<HTMLInputElement>(null);
   const [notice, setNotice] = useState('');
 
   const toggleReminders = async (on: boolean) => {
@@ -21,29 +22,27 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
     else setNotice('Mitteilungen sind für werde blockiert. Du kannst sie in den Browser- oder iPhone-Einstellungen erlauben.');
   };
 
-  const exportData = async () => {
-    const filename = `werde-${new Date().toISOString().slice(0, 10)}.json`;
-    const w = window as unknown as { claude?: { use?: (n: string) => Promise<{ save(o: { filename: string; data: string }): Promise<unknown> } | null> } };
-    const dl = w.claude?.use ? await w.claude.use('downloads').catch(() => null) : null;
-    if (dl) { try { await dl.save({ filename, data: JSON.stringify(data, null, 2) }); } catch { /* declined */ } return; }
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(a.href);
+  const backup = async () => {
+    if (await exportData(data)) saveSettings({ lastBackupAt: Date.now() });
   };
-
-  const importData = async (f: File) => {
-    try {
-      const d = JSON.parse(await f.text()) as Data;
-      if (Array.isArray(d.themes) && Array.isArray(d.goals) && Array.isArray(d.logs)) replaceAll(d);
-    } catch { /* ignore invalid file */ }
-  };
+  const [planDay, setPlanDay] = useState('');
+    const tomorrowISO = (() => { const t = new Date(); t.setDate(t.getDate() + 1); return toISO(t); })();
+  const planned = data.restDays
+    .map(fromKey)
+    .filter((d) => d.getTime() > new Date(new Date().toDateString()).getTime())
+    .sort((a, b) => a.getTime() - b.getTime());
 
   return (
     <main className="view">
       <header className="greet top"><h1>Dein Raum</h1><p>Hier entscheidest du.</p></header>
+
+      <section className="card settings">
+        <label className="setting-row">
+          <span>Dein Name</span>
+          <input className="name-input" type="text" value={s.name} maxLength={30} placeholder="Wie heißt du?"
+            autoComplete="given-name" onChange={(e) => saveSettings({ name: e.target.value })} />
+        </label>
+      </section>
 
       <section className="card settings">
         <h2>Sanfte Erinnerungen</h2>
@@ -74,7 +73,7 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
         <h2>Auf deinem Home-Bildschirm</h2>
         {!isStandalone() && (
           <p className="small home-hint">
-            Öffne werde auf dem iPhone in Safari, tippe auf <b>Teilen</b> und dann auf <b>Zum Home-Bildschirm</b>. Dann öffnet es sich wie eine App und funktioniert offline.
+            <b>iPhone:</b> in Safari auf <b>Teilen</b>, dann <b>Zum Home-Bildschirm</b>. <b>Android:</b> im Browser-Menü <b>⋮</b> auf <b>Zum Startbildschirm hinzufügen</b> oder <b>App installieren</b>. Dann öffnet sich werde wie eine App, funktioniert offline und deine Daten bleiben sicherer erhalten.
           </p>
         )}
         <label className="toggle">
@@ -98,10 +97,31 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
 
       <section className="card settings">
         <h2>Ruhe</h2>
-        <p className="muted small">Ein Ruhetag pausiert alle Ziele und Erinnerungen bis morgen.</p>
+        <p className="muted small">Ein Ruhetag pausiert alle Ziele und Erinnerungen für diesen Tag.</p>
         <button className="secondary" onClick={() => toggleRestDay(new Date())}>
           {restingToday ? 'Ruhetag beenden' : 'Heute einen Ruhetag nehmen'}
         </button>
+        <div className="setting-row">
+          <span>Ruhetag planen</span>
+          <span className="row">
+            <input type="date" min={tomorrowISO} value={planDay} aria-label="Datum für den Ruhetag"
+              onChange={(e) => setPlanDay(e.target.value)} />
+            <button className="secondary small-btn" disabled={!planDay}
+              onClick={() => { const d = fromISO(planDay); if (!data.restDays.includes(dayKey(d))) toggleRestDay(d); setPlanDay(''); }}>
+              Planen
+            </button>
+          </span>
+        </div>
+        {planned.length > 0 && (
+          <ul className="rest-chips" aria-label="Geplante Ruhetage">
+            {planned.map((d) => (
+              <li key={d.getTime()}>
+                <span aria-hidden="true">☾</span> {d.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' })}
+                <button className="chip-x" aria-label="Ruhetag entfernen" onClick={() => toggleRestDay(d)}>×</button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="card settings">
@@ -132,14 +152,21 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
         <h2>Deine Daten</h2>
         <p className="muted small">
           {sync === 'account' ? 'Gespeichert in deinem Claude-Konto, privat nur für dich. Kein Tracking.'
-            : sync === 'connecting' ? 'Verbinde …' : 'Alles bleibt auf diesem Gerät. Kein Konto, kein Tracking.'}
+            : sync === 'connecting' ? 'Verbinde …' : 'Alles bleibt in diesem Browser auf diesem Gerät. Kein Konto, kein Tracking. Sichere ab und zu eine Kopie, zum Beispiel in Dateien oder Google Drive.'}
         </p>
+        {sync !== 'account' && s.lastBackupAt > s.firstOpenedAt && (
+          <p className="muted small">Letzte Kopie: {new Date(s.lastBackupAt).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })}</p>
+        )}
         <div className="row">
-          <button className="secondary" onClick={exportData}>Kopie sichern</button>
-          <button className="secondary" onClick={() => file.current?.click()}>Kopie zurückholen</button>
-          <input ref={file} type="file" accept="application/json" hidden onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
+          <button className="secondary" onClick={backup}>Kopie sichern</button>
+          <RestoreButton />
         </div>
       </section>
     </main>
   );
 }
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const toISO = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const fromISO = (iso: string) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+const fromKey = (k: string) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };

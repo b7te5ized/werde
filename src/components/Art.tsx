@@ -1,3 +1,5 @@
+import { Cat, type CatPose } from './Cat';
+
 /* Painterly SVG illustrations. The gouache filter warps edges and adds soft brush streaks. */
 
 export function ArtDefs() {
@@ -12,6 +14,10 @@ export function ArtDefs() {
             values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 0.92  1.6 0 0 0 -0.82" result="streakA" />
           <feComposite in="streakA" in2="shape" operator="in" result="hl" />
           <feMerge><feMergeNode in="shape" /><feMergeNode in="hl" /></feMerge>
+        </filter>
+        <filter id="glow" x="-200%" y="-200%" width="500%" height="500%">
+          <feGaussianBlur stdDeviation="2.4" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <filter id="soft-edge" x="-10%" y="-10%" width="120%" height="120%">
           <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="2" result="w" />
@@ -75,8 +81,8 @@ export function Sparkle({ x, y, s, color = '#fff6c9' }: { x: number; y: number; 
 }
 
 /** The painted meadow behind the greeting: the "clearing". */
-export function Meadow({ mood, phase = 'day', weather = null }: {
-  mood: 'calm' | 'happy' | 'sleepy'; phase?: 'dawn' | 'day' | 'dusk' | 'night'; weather?: string | null;
+export function Meadow({ mood, pose, phase = 'day', weather = null }: {
+  mood: 'calm' | 'happy' | 'sleepy'; pose: CatPose; phase?: 'dawn' | 'day' | 'dusk' | 'night'; weather?: string | null;
 }) {
   const night = phase === 'night';
   const cloudy = weather === 'cloud' || weather === 'rain' || weather === 'storm' || weather === 'snow';
@@ -132,8 +138,8 @@ export function Meadow({ mood, phase = 'day', weather = null }: {
         </g>
       )}
 
-      <g transform="translate(150 104)">
-        <Puff size={104} mood={mood} />
+      <g transform="translate(134 86)">
+        <Cat size={132} pose={pose} mood={mood} />
       </g>
     </svg>
   );

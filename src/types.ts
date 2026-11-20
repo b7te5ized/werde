@@ -53,6 +53,12 @@ export interface Settings {
   weatherOn: boolean;
   breathingMoment: boolean;
   restUntil: number;
+  /** how the cat greets you */
+  name: string;
+  /** last time a backup copy was saved (or the reminder postponed) */
+  lastBackupAt: number;
+  /** backup reminder postponed until */
+  backupSnoozeUntil: number;
 }
 
 export interface Data {

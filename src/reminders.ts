@@ -1,4 +1,5 @@
 import type { Settings } from './types';
+import { dayKey } from './progress';
 
 const toMin = (hhmm: string) => {
   const [h, m] = hhmm.split(':').map(Number);
@@ -19,8 +20,9 @@ export function inQuietWindow(now: Date, start: string, end: string): boolean {
  * we are outside the quiet window, and we have not nudged since the last entry
  * (at most one nudge per quiet stretch, repeated only after another full interval).
  */
-export function shouldNudge(now: Date, lastActivity: number, settings: Settings): boolean {
+export function shouldNudge(now: Date, lastActivity: number, settings: Settings, restDays: string[] = []): boolean {
   if (!settings.remindersOn) return false;
+  if (restDays.includes(dayKey(now))) return false;
   if (settings.restUntil > now.getTime()) return false;
   if (inQuietWindow(now, settings.quietStart, settings.quietEnd)) return false;
   const gap = settings.reminderHours * 3600_000;

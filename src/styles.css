@@ -396,3 +396,23 @@ textarea { resize: vertical; min-height: 64px; line-height: 1.4; }
 .swatch { background-image: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, .75), transparent 46%), radial-gradient(circle at 72% 82%, rgba(124, 104, 214, .28), transparent 58%); }
 .fill-bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(124, 104, 214, .16), transparent 55%), radial-gradient(ellipse 60% 80% at 85% 0%, rgba(255, 252, 235, .35), transparent 70%); pointer-events: none; }
 .save-note { background: #fdf0c8; color: #5e4a0e; } .save-note p { margin: 0; font-size: 15px; }
+
+/* cat */
+.affirm { margin: 6px 0 0 !important; font-style: italic; color: var(--ink) !important; opacity: .85; }
+.cat-float { animation: catfloat 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.cat-tail { animation: tailwag 1.6s ease-in-out infinite; transform-box: view-box; transform-origin: 78px 100px; }
+.cat-eyes { animation: eyeglow 4s ease-in-out infinite; }
+@keyframes catfloat { 50% { transform: translateY(-3px); } }
+@keyframes tailwag { 50% { transform: rotate(8deg); } }
+@keyframes eyeglow { 0%, 46%, 54%, 100% { opacity: 1; } 50% { opacity: .1; } }
+@media (prefers-reduced-motion: reduce) { .cat-float, .cat-tail, .cat-eyes { animation: none; } }
+.name-input { width: 100%; }
+.rest-chips { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rest-chips li { display: inline-flex; align-items: center; gap: 6px; padding: 6px 6px 6px 12px; border-radius: 999px; background: var(--on-bg); color: var(--on-ink); font-size: 14px; }
+.chip-x { border: 0; background: transparent; color: inherit; font-size: 18px; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; }
+.backup-note { background: #eaf3fd; color: #23405a; } .backup-note p { margin: 0 0 8px; font-size: 15px; }
+.greet-name { display: block; }
+.greet-row { align-items: flex-start; }
+.greet-row .small-btn { margin-top: 4px; flex-shrink: 0; }
+.greet-row h1 { flex: 1; min-width: 0; }
+.settings .secondary + .setting-row { margin-top: 14px; }
