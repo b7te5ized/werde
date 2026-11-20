@@ -406,3 +406,7 @@ textarea { resize: vertical; min-height: 64px; line-height: 1.4; }
 .greet-row .small-btn { margin-top: 4px; flex-shrink: 0; }
 .greet-row h1 { flex: 1; min-width: 0; font-size: 28px; }
 .settings .secondary + .setting-row { margin-top: 14px; }
+.welcome { display: flex; flex-direction: column; gap: 18px; }
+.pronoun-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.settings .pronoun-row + input { margin-top: 8px; }
+.greet-row h1.long { font-size: 23px; line-height: 1.2; }

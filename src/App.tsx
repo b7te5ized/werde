@@ -15,6 +15,7 @@ import { isStandalone } from './pwa';
 import { useSky } from './sky';
 import { Celebration } from './components/Celebration';
 import { Breathe } from './components/Breathe';
+import { Welcome } from './components/Welcome';
 
 type Sheet =
   | { kind: 'new-goal'; themeId?: string }
@@ -50,6 +51,7 @@ export default function App() {
       <ToastBar />
       <Celebration />
       {!quick && <Breathe />}
+      <Welcome />
 
       {sheet?.kind === 'new-goal' && <GoalEditor defaultThemeId={sheet.themeId} onClose={close} />}
       {sheet?.kind === 'edit-goal' && findGoal(sheet.id) && <GoalEditor goal={findGoal(sheet.id)} onClose={close} />}

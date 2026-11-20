@@ -53,8 +53,13 @@ export interface Settings {
   weatherOn: boolean;
   breathingMoment: boolean;
   restUntil: number;
-  /** how the cat greets you */
+  /** how werde greets you */
   name: string;
+  /** she | he | they | custom | "" (not chosen) */
+  pronoun: 'she' | 'he' | 'they' | 'custom' | '';
+  customPronoun: string;
+  /** first-open question answered or skipped */
+  welcomed: boolean;
   /** last time a backup copy was saved (or the reminder postponed) */
   lastBackupAt: number;
   /** backup reminder postponed until */

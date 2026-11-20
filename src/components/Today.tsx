@@ -1,4 +1,5 @@
-import { dayKey, greeting } from '../progress';
+import { dayKey } from '../progress';
+import { greetingFor } from '../greetings';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import type { Goal, Theme } from '../types';
@@ -32,7 +33,7 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
       </section>
       <header className="greet">
         <div className="greet-row">
-          <h1>{greeting(now)}{name && <>,<span className="greet-name">{name}</span></>}</h1>
+          {(() => { const g = greetingFor(now, name, data.settings.pronoun); return <h1 className={g.length > 26 ? 'long' : undefined}>{g}</h1>; })()}
           {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Schnell notieren</button>}
         </div>
         <p>

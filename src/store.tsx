@@ -8,7 +8,7 @@ const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v5' : 'werde.data.v1';
 
 const DEFAULT_SETTINGS: Settings = {
   reminderHours: 5, quietStart: '22:00', quietEnd: '07:00', celebrations: true,
-  remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', weatherOn: false, breathingMoment: false, restUntil: 0, name: '', lastBackupAt: 0, backupSnoozeUntil: 0,
+  remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', weatherOn: false, breathingMoment: false, restUntil: 0, name: '', pronoun: '', customPronoun: '', welcomed: false, lastBackupAt: 0, backupSnoozeUntil: 0,
 };
 
 function empty(): Data {

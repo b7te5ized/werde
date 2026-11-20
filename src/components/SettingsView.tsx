@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RestoreButton } from './RestoreButton';
+import { PronounPicker } from './Welcome';
 import { enableNotifications } from '../useReminders';
 import { isStandalone } from '../pwa';
 import { dayKey } from '../progress';
@@ -42,6 +43,11 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
           <input className="name-input" type="text" value={s.name} maxLength={30} placeholder="Wie heißt du?"
             autoComplete="given-name" onChange={(e) => saveSettings({ name: e.target.value })} />
         </label>
+        <div className="setting-row">
+          <span>Deine Pronomen</span>
+          <PronounPicker value={s.pronoun} custom={s.customPronoun}
+            onChange={(pronoun) => saveSettings({ pronoun })} onCustom={(customPronoun) => saveSettings({ customPronoun })} />
+        </div>
       </section>
 
       <section className="card settings">
