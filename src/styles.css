@@ -499,3 +499,5 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .add-btn:active { transform: scale(.95); }
 .goal-pct { flex: none; background: none; border: 0; padding: 0 2px 0 6px; color: var(--ink); font-family: 'Fraunces', Georgia, serif;
   font-variation-settings: 'SOFT' 100, 'WONK' 1; font-weight: 600; font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.danger-btn { border: 0; border-radius: 16px; padding: 12px 20px; font-weight: 800; font-size: 16px; background: #fbe1df; color: #b4322a; }
+:root.phase-night .danger-btn { background: #5a2f2b; color: #ffb4ab; }

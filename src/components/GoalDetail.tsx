@@ -66,7 +66,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
         <button className="secondary" onClick={() => saveGoal({ ...goal, paused: !goal.paused })}>
           {goal.paused ? 'Wieder aufnehmen' : 'Pausieren'}
         </button>
-        <button className="secondary quiet" onClick={() => { deleteGoal(goal.id); onClose(); }}>Entfernen</button>
+        <button className="danger-btn" onClick={() => { deleteGoal(goal.id); onClose(); }}>Löschen</button>
       </div>
     </Sheet>
   );
