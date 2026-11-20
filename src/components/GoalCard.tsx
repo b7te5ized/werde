@@ -1,6 +1,6 @@
 import type { Goal, Theme } from '../types';
 import { PALETTE } from '../palette';
-import { dayKey, fmt, goalProgress, PERIOD_LABEL, progressLabel, todayFill } from '../progress';
+import { fmt, goalProgress, PERIOD_LABEL, progressLabel, todayFill } from '../progress';
 import { useStore } from '../store';
 import { rhythm, UNIT_WORD } from '../consistency';
 import { categoryOf } from '../categories';
@@ -13,9 +13,6 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
   const p = goalProgress(goal, data.logs);
   const label = progressLabel(goal, p);
   const r = rhythm(goal, data);
-  const today = dayKey(new Date());
-  const resting = data.restDays.includes(today) || (data.freezes[goal.id]?.includes(today) ?? false);
-  const hardDay = !goal.paused && !resting && r.missedLast && !r.doneNow && !!goal.why;
   const reached = goal.direction === 'more' && p.reached;
 
   return (
@@ -38,7 +35,6 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
           </button>
         )}
       </div>
-      {hardDay && <p className="hard-day">“{goal.why}”</p>}
     </article>
   );
 }

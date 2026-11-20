@@ -27,7 +27,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
     <Sheet title={goal.name} onClose={onClose}>
       {goal.why && (
         <blockquote className="why-first">
-          <span className="why-label">Dein Warum</span>
+          <span className="why-label">Warum?</span>
           {goal.why}
         </blockquote>
       )}
