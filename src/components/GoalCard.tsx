@@ -33,7 +33,7 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
           {goal.cue && <span className="goal-cue">{cueText(goal.cue)}</span>}
         </button>
         {!goal.paused && (
-          <button className="log-btn" onClick={() => log(goal.id, goal.step)} aria-label={`${fmt(goal.step)} ${goal.unit} zu ${goal.name} hinzufügen`}>
+          <button className="log-btn no-drag" onClick={() => log(goal.id, goal.step)} aria-label={`${fmt(goal.step)} ${goal.unit} zu ${goal.name} hinzufügen`}>
             +{fmt(goal.step)}
           </button>
         )}

@@ -46,9 +46,6 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
           {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Schnell notieren</button>}
         </div>
         <p className="quote" key={quote}>{quote}</p>
-        <p className="greet-date">
-          {now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
-        </p>
       </header>
 
       {sync === 'local' && inClaude && (

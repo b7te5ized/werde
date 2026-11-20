@@ -88,6 +88,7 @@ interface Store {
   saveTheme: (t: Theme) => void;
   deleteTheme: (id: string) => void;
   reorderThemes: (ids: string[]) => void;
+  reorderGoals: (themeId: string, ids: string[]) => void;
   toggleThemeOpen: (id: string) => void;
   saveGoal: (g: Goal) => void;
   deleteGoal: (id: string) => void;
@@ -202,6 +203,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const next = ids.map((id) => byId.get(id)).filter((t): t is Theme => !!t);
       for (const t of d.themes) if (!ids.includes(t.id)) next.push(t);
       return { ...d, themes: next };
+    }, 'Reihenfolge geändert'),
+    reorderGoals: (themeId, ids) => change((d) => {
+      const byId = new Map(d.goals.map((g) => [g.id, g]));
+      const queue = ids.map((id) => byId.get(id)).filter((g): g is Goal => !!g && g.themeId === themeId);
+      // keep other themes' goals where they are, refill this theme's slots in the new order
+      const goals = d.goals.map((g) => (g.themeId === themeId ? queue.shift() ?? g : g));
+      return { ...d, goals };
     }, 'Reihenfolge geändert'),
     toggleThemeOpen: (id) => setData((d) => ({ ...d, themes: d.themes.map((t) => (t.id === id ? { ...t, collapsed: !t.collapsed } : t)) })),
     deleteTheme: (id) =>
