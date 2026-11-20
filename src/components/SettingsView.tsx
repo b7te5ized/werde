@@ -86,7 +86,7 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
           </p>
         )}
         <label className="toggle">
-          <span>Direkt mit „Eintrag“ starten</span>
+          <span>Direkt mit „Erfassen“ starten</span>
           <input type="checkbox" checked={s.openInQuickLog} onChange={(e) => saveSettings({ openInQuickLog: e.target.checked })} />
         </label>
       </section>

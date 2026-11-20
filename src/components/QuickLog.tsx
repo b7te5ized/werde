@@ -13,7 +13,7 @@ export function QuickLog({ onClose }: { onClose: () => void }) {
     <main className="view quick">
       <header className="greet top quick-head">
         <div>
-          <h1>Eintrag</h1>
+          <h1>Erfassen</h1>
         </div>
         <button className="secondary" onClick={onClose}>Fertig</button>
       </header>

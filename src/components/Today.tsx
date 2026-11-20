@@ -43,7 +43,7 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
       <header className="greet top">
         <div className="greet-row">
           <h1 className={greet.text.length > 26 ? 'long' : undefined}>{headOf(greet.text)}<span className="nowrap">{tailOf(greet.text)}<GreetIcon key={greet.text} kind={greet.icon} /></span></h1>
-          {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Eintrag</button>}
+          {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Erfassen</button>}
         </div>
         <p className="quote" key={quote}>{quote}</p>
       </header>
