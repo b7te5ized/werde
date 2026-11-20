@@ -46,20 +46,26 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
         </form>
       )}
 
-      <h3 className="sub">Notiert {PERIOD_LABEL[goal.period]}</h3>
-      {entries.length === 0 ? (
-        <p className="muted">Noch nichts, und das ist in Ordnung.</p>
-      ) : (
-        <ul className="entries">
-          {entries.map((l) => (
-            <li key={l.id}>
-              <span>{fmt(l.amount)} {goal.unit}</span>
-              <span className="muted">{new Date(l.at).toLocaleString('de-DE', { weekday: goal.period === 'day' ? undefined : 'short', hour: '2-digit', minute: '2-digit' })}</span>
-              <button className="text-btn" onClick={() => deleteLog(l.id)} aria-label={`Eintrag ${fmt(l.amount)} ${goal.unit} entfernen`}>Entfernen</button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <details className="entries-box">
+        <summary>
+          <span>Einträge</span>
+          <span className="muted entries-count">{entries.length > 0 ? `${entries.length} ${PERIOD_LABEL[goal.period]}` : PERIOD_LABEL[goal.period]}</span>
+          <svg className="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </summary>
+        {entries.length === 0 ? (
+          <p className="muted entries-empty">Noch nichts, und das ist in Ordnung.</p>
+        ) : (
+          <ul className="entries">
+            {entries.map((l) => (
+              <li key={l.id}>
+                <span>{fmt(l.amount)} {goal.unit}</span>
+                <span className="muted">{new Date(l.at).toLocaleString('de-DE', { weekday: goal.period === 'day' ? undefined : 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <button className="text-btn" onClick={() => deleteLog(l.id)} aria-label={`Eintrag ${fmt(l.amount)} ${goal.unit} entfernen`}>Entfernen</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </details>
 
       <div className="detail-actions">
         <button className="primary edit-btn" onClick={onEdit}>Bearbeiten</button>
