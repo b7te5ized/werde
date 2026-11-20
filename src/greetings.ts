@@ -1,38 +1,42 @@
 /**
- * Greetings per time of day. A line is either plain text or a set of variants
- * by pronoun, so gendered words (Queen/King/…) adapt. "{name}" is filled with
- * the person's name; ", {name}" disappears when no name is set.
+ * Greetings per time of day. A line is plain text or variants by pronoun, so
+ * gendered words (Queen/King/…) adapt. "{name}" is the person's name; ", {name}"
+ * disappears when no name is set. Each line ends with a small drawn icon.
  */
 export type Pronoun = 'she' | 'he' | 'they' | 'custom' | '';
-type Line = string | { she: string; he: string; they: string };
+export type GreetIconKind = 'sunrise' | 'star' | 'sparkles' | 'shooting' | 'moon' | 'crown';
+type Text = string | { she: string; he: string; they: string };
+interface Line { text: Text; icon: GreetIconKind }
 
 export const GREETINGS: Record<'morning' | 'lunch' | 'afternoon' | 'evening' | 'night', Line[]> = {
   morning: [
-    'Good morning, Rockstar.',
-    'Rise and shine, {name}.',
-    'Main character has awakened.',
-    'Start your engines, {name}.',
+    { text: 'Good morning, Rockstar.', icon: 'star' },
+    { text: 'Rise and shine, {name}.', icon: 'sunrise' },
+    { text: 'Main character has awakened.', icon: 'sparkles' },
+    { text: 'Start your engines, {name}.', icon: 'shooting' },
   ],
   lunch: [
-    "You're serving, {name}.",
-    'Lunch first, world domination later.',
-    'Lunch eleganza extravaganza.',
+    { text: "You're serving, {name}.", icon: 'sparkles' },
+    { text: 'Lunch first, world domination later.', icon: 'crown' },
+    { text: 'Lunch eleganza extravaganza.', icon: 'star' },
   ],
   afternoon: [
-    'Werk it, {name}.',
-    'Charisma, Uniqueness, Nerve & Talent. Alles da.',
+    { text: 'Werk it, {name}.', icon: 'sparkles' },
+    { text: 'Charisma, Uniqueness, Nerve & Talent. Alles da.', icon: 'crown' },
   ],
   evening: [
-    'Was für ein Tag, Legende.',
-    'You ate today, {name}.',
+    { text: 'Was für ein Tag, Legende.', icon: 'shooting' },
+    { text: 'You ate today, {name}.', icon: 'star' },
   ],
   night: [
-    'Gute Nacht, {name}.',
-    'Sashay away to bed.',
+    { text: 'Gute Nacht, {name}.', icon: 'moon' },
+    { text: 'Sashay away to bed.', icon: 'shooting' },
   ],
 };
 
-export function slotFor(now: Date): keyof typeof GREETINGS {
+export type Slot = keyof typeof GREETINGS;
+
+export function slotFor(now: Date): Slot {
   const h = now.getHours();
   if (h >= 5 && h < 11) return 'morning';
   if (h >= 11 && h < 14) return 'lunch';
@@ -41,17 +45,19 @@ export function slotFor(now: Date): keyof typeof GREETINGS {
   return 'night';
 }
 
-function render(line: Line, name: string, pronoun: Pronoun): string {
+export function renderText(text: Text, name: string, pronoun: Pronoun): string {
   const key = pronoun === 'she' || pronoun === 'he' ? pronoun : 'they';
-  const text = typeof line === 'string' ? line : line[key];
+  const t = typeof text === 'string' ? text : text[key];
   const n = name.trim();
-  return n ? text.replace(/\{name\}/g, n) : text.replace(/,?\s*\{name\}/g, '');
+  return n ? t.replace(/\{name\}/g, n) : t.replace(/,?\s*\{name\}/g, '');
 }
 
-/** One line per slot per day, so it stays put while the day goes on. */
-export function greetingFor(now: Date, name: string, pronoun: Pronoun): string {
+let lastPick = '';
+/** A random line from this time of day, never the same one twice in a row. */
+export function pickGreeting(now: Date, name: string, pronoun: Pronoun): { text: string; icon: GreetIconKind } {
   const lines = GREETINGS[slotFor(now)];
-  const start = new Date(now.getFullYear(), 0, 0).getTime();
-  const doy = Math.floor((now.getTime() - start) / 86400_000);
-  return render(lines[doy % lines.length], name, pronoun);
+  const pool = lines.length > 1 ? lines.filter((l) => JSON.stringify(l.text) !== lastPick) : lines;
+  const line = pool[Math.floor(Math.random() * pool.length)];
+  lastPick = JSON.stringify(line.text);
+  return { text: renderText(line.text, name, pronoun), icon: line.icon };
 }

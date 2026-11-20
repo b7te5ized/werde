@@ -78,4 +78,8 @@ export interface Data {
   restDays: string[];
   /** per-goal freeze days (day keys) */
   freezes: Record<string, string[]>;
+  /** ideas and future habits that do not fit yet */
+  notes: Note[];
 }
+
+export interface Note { id: string; text: string; at: number }

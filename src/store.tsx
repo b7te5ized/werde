@@ -4,7 +4,7 @@ import { dayKey, goalProgress, periodStart } from './progress';
 import { MILESTONES, rhythm, UNIT_WORD } from './consistency';
 import { connectCloud, type Cloud } from './cloud';
 
-const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v5' : 'werde.data.v1';
+const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v6' : 'werde.data.v1';
 
 const DEFAULT_SETTINGS: Settings = {
   reminderHours: 5, quietStart: '22:00', quietEnd: '07:00', celebrations: true,
@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS: Settings = {
 };
 
 function empty(): Data {
-  return { version: 1, themes: [], goals: [], logs: [], settings: DEFAULT_SETTINGS, celebrated: {}, restDays: [], freezes: {} };
+  return { version: 1, themes: [], goals: [], logs: [], settings: DEFAULT_SETTINGS, celebrated: {}, restDays: [], freezes: {}, notes: [] };
 }
 
 function load(): Data {
@@ -20,7 +20,7 @@ function load(): Data {
     const raw = localStorage.getItem(KEY);
     if (!raw) return import.meta.env.VITE_DEMO ? demo() : empty();
     const d = JSON.parse(raw) as Data;
-    return { ...empty(), ...d, settings: { ...DEFAULT_SETTINGS, ...d.settings }, celebrated: d.celebrated ?? {}, restDays: d.restDays ?? [], freezes: d.freezes ?? {} };
+    return { ...empty(), ...d, settings: { ...DEFAULT_SETTINGS, ...d.settings }, celebrated: d.celebrated ?? {}, restDays: d.restDays ?? [], freezes: d.freezes ?? {}, notes: d.notes ?? [] };
   } catch {
     return empty();
   }
@@ -59,6 +59,10 @@ function demo(): Data {
     ],
     logs: demoLogs(now),
     freezes: { g1: [dayKey(new Date(now - 3 * 86400_000))] },
+    notes: [
+      { id: 'n1', text: 'Abends 10 Minuten lesen statt scrollen', at: now - 2 * 86400_000 },
+      { id: 'n2', text: 'Einmal pro Woche Blumen für mich kaufen', at: now - 5 * 86400_000 },
+    ],
     restDays: [dayKey(new Date(now - 10 * 86400_000))],
   };
 }
@@ -91,6 +95,8 @@ interface Store {
   toggleRestDay: (day: Date) => void;
   toggleFreeze: (goalId: string, day: Date) => void;
   replaceAll: (d: Data) => void;
+  addNote: (text: string) => void;
+  removeNote: (id: string) => void;
 }
 
 const Ctx = createContext<Store | null>(null);
@@ -259,7 +265,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       });
     },
     saveSettings: (s) => setData((d) => ({ ...d, settings: { ...d.settings, ...s } })),
-    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now() }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
+    addNote: (text) => setData((d) => ({ ...d, notes: [{ id: uid(), text, at: Date.now() }, ...d.notes] })),
+    removeNote: (id) => change((d) => ({ ...d, notes: d.notes.filter((n) => n.id !== id) }), 'Notiz entfernt'),
+    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now() }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, notes: nd.notes ?? [], celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
   };
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>;

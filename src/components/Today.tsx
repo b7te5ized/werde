@@ -1,5 +1,7 @@
 import { dayKey } from '../progress';
-import { greetingFor } from '../greetings';
+import { useEffect, useState } from 'react';
+import { pickGreeting, slotFor } from '../greetings';
+import { GreetIcon } from './GreetIcon';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import type { Goal, Theme } from '../types';
@@ -22,8 +24,19 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
   const inClaude = !!(window as unknown as { claude?: { use?: unknown } }).claude?.use;
   const resting = data.restDays.includes(dayKey(new Date()));
   const now = new Date();
+  const pronoun = data.settings.pronoun;
+  const nm = data.settings.name;
+  const [greet, setGreet] = useState(() => pickGreeting(now, nm, pronoun));
+  // A fresh line each time werde is opened again, and when the time of day changes.
+  useEffect(() => { setGreet(pickGreeting(new Date(), nm, pronoun)); }, [nm, pronoun]);
+  useEffect(() => {
+    let slot = slotFor(new Date());
+    const again = () => { if (document.visibilityState === 'visible') setGreet(pickGreeting(new Date(), nm, pronoun)); };
+    const tick = window.setInterval(() => { const s = slotFor(new Date()); if (s !== slot) { slot = s; again(); } }, 60_000);
+    document.addEventListener('visibilitychange', again);
+    return () => { document.removeEventListener('visibilitychange', again); window.clearInterval(tick); };
+  }, [nm, pronoun]);
   const active = data.goals.filter((g) => !g.paused);
-  const name = data.settings.name.trim();
   const showBackup = sync === 'local' && !inClaude && backupDue(data);
 
   return (
@@ -33,7 +46,7 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
       </section>
       <header className="greet">
         <div className="greet-row">
-          {(() => { const g = greetingFor(now, name, data.settings.pronoun); return <h1 className={g.length > 26 ? 'long' : undefined}>{g}</h1>; })()}
+          <h1 className={greet.text.length > 26 ? 'long' : undefined}>{headOf(greet.text)}<span className="nowrap">{tailOf(greet.text)}<GreetIcon key={greet.text} kind={greet.icon} /></span></h1>
           {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Schnell notieren</button>}
         </div>
         <p>
@@ -93,3 +106,8 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
     </main>
   );
 }
+
+/** Keep the last word and its little mark together on one line. */
+const cut = (t: string) => t.lastIndexOf(' ') + 1;
+const headOf = (t: string) => t.slice(0, cut(t));
+const tailOf = (t: string) => t.slice(cut(t));

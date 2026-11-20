@@ -52,7 +52,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
-  font-family: 'Nunito', ui-rounded, system-ui, -apple-system, sans-serif;
+  font-family: 'Figtree', system-ui, sans-serif;
   background: var(--bg);
   color: var(--ink);
   font-size: 17px;
@@ -410,3 +410,46 @@ textarea { resize: vertical; min-height: 64px; line-height: 1.4; }
 .pronoun-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .settings .pronoun-row + input { margin-top: 8px; }
 .greet-row h1.long { font-size: 23px; line-height: 1.2; }
+
+/* type: a soft, characterful serif for headlines, a warm sans for reading */
+h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  letter-spacing: -0.015em;
+}
+.greet h1 { font-weight: 560; line-height: 1.12; }
+.greet p, .muted { font-family: 'Figtree', system-ui, sans-serif; }
+.theme-name { font-style: italic; font-weight: 520; font-size: 21px; }
+.card h2 { font-size: 21px; }
+
+/* greeting marks */
+.gicon { display: inline-block; width: 0.95em; height: 0.95em; margin-left: 0.22em; vertical-align: -0.1em; overflow: visible;
+  --gi-sun: #f2c443; --gi-pink: #f39cc4; --gi-lilac: #a990ea; --gi-line: #b9d58f; }
+:root.phase-night .gicon { --gi-sun: #f3dc8e; --gi-line: #6c8a58; }
+.gicon * { transform-box: fill-box; transform-origin: center; }
+.gi-rise { animation: gi-rise 1.6s cubic-bezier(.3,.7,.3,1) both; }
+.gi-rays { animation: gi-fade 1.2s ease .9s both; }
+.gi-twinkle { animation: gi-twinkle 3.2s ease-in-out infinite; }
+.gi-d1 { animation-delay: .7s; } .gi-d2 { animation-delay: 1.4s; }
+.gi-shoot { animation: gi-shoot 1.1s cubic-bezier(.2,.8,.3,1) both, gi-hover 4s ease-in-out 1.2s infinite; }
+.gi-sway { animation: gi-sway 5s ease-in-out infinite; }
+.gi-bob { animation: gi-bob 3.6s ease-in-out infinite; }
+@keyframes gi-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes gi-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes gi-twinkle { 0%, 100% { transform: scale(1) rotate(0); opacity: 1; } 50% { transform: scale(.72) rotate(14deg); opacity: .75; } }
+@keyframes gi-shoot { from { transform: translate(-14px, 12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes gi-hover { 50% { transform: translate(1px, -2px); } }
+@keyframes gi-sway { 50% { transform: rotate(-10deg); } }
+@keyframes gi-bob { 50% { transform: translateY(-2px) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .gicon * { animation: none !important; } }
+
+/* notes */
+.note-add { display: flex; gap: 8px; align-items: flex-end; margin-top: 6px; }
+.note-add textarea { flex: 1; min-width: 0; resize: none; border-radius: 14px; border: 2px solid var(--line); background: var(--paper); padding: 10px 12px; font-size: 16px; line-height: 1.35; }
+.note-list { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; }
+.note-list li { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; padding: 10px 0; border-top: 1.5px dashed var(--line); }
+.note-text { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-variation-settings: 'SOFT' 100; font-size: 17px; overflow-wrap: anywhere; }
+.note-date { font-size: 13px; color: var(--ink-soft); }
+.nowrap { white-space: nowrap; }
+.goal-name { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-variation-settings: 'SOFT' 100, 'WONK' 1; font-size: 19px; letter-spacing: -0.01em; }

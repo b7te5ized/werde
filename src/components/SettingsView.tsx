@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { RestoreButton } from './RestoreButton';
 import { PronounPicker } from './Welcome';
+import { Notes } from './Notes';
 import { enableNotifications } from '../useReminders';
 import { isStandalone } from '../pwa';
 import { dayKey } from '../progress';
@@ -36,6 +37,8 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
   return (
     <main className="view">
       <header className="greet top"><h1>Dein Raum</h1><p>Hier entscheidest du.</p></header>
+
+      <Notes />
 
       <section className="card settings">
         <label className="setting-row">
