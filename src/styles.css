@@ -572,3 +572,30 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .mcell.today { box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--accent); font-weight: 900; }
 .mcell.today .mnum { font-size: 15px; }
 .gs-pct { color: var(--ink); opacity: .8; font-variant-numeric: tabular-nums; }
+
+/* Safe zones: long names wrap inside their own column and never run under the % or past the edge */
+.goal-card { align-items: center; }
+.goal-main { flex: 1 1 0; min-width: 0; align-items: stretch; }
+.goal-main > * { max-width: 100%; }
+.goal-meta { align-self: flex-start; }
+.goal-open { display: block; width: 100%; min-width: 0; }
+.goal-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3;
+  white-space: normal; overflow: hidden; overflow-wrap: anywhere; hyphens: auto; line-height: 1.22; text-overflow: clip; }
+.goal-cue { overflow-wrap: anywhere; }
+.goal-pct { flex: 0 0 auto; min-width: 3.1em; text-align: right; align-self: center; white-space: nowrap; }
+.goal-meta .goal-amount { overflow-wrap: anywhere; min-width: 0; }
+.add-btn { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.theme-toggle .theme-name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; line-height: 1.2; }
+.theme-toggle > * { flex-shrink: 0; }
+.theme-toggle .theme-name { flex: 0 1 auto; min-width: 0; }
+.quick-name, .week-goal-name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.sheet-head { min-width: 0; }
+.sheet-head h2 { min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
+.goal-stats .gs-top > :first-child { min-width: 0; overflow-wrap: anywhere; }
+.goal-stats .gs-top > :last-child { flex: none; }
+.why-first, .quote, .notes-list li, .entries li > :first-child { overflow-wrap: anywhere; }
+.setting-row .row:has(input[type=time]) { flex-wrap: wrap; row-gap: 8px; }
+.setting-row input[type=time] { min-width: 7.2em; }
+.setting-row > span:first-child, .setting-row label { min-width: 0; overflow-wrap: anywhere; }
+.setting-row .row .unit-hint { flex: none; }
+.setting-row input[type=time] { flex: 1 1 7.2em; padding: 12px 6px; }
