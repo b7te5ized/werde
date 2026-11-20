@@ -453,3 +453,32 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .note-date { font-size: 13px; color: var(--ink-soft); }
 .nowrap { white-space: nowrap; }
 .goal-name { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-variation-settings: 'SOFT' 100, 'WONK' 1; font-size: 19px; letter-spacing: -0.01em; }
+.greet .quote { margin: 8px 0 0; font-family: 'Fraunces', Georgia, serif; font-style: italic; font-variation-settings: 'SOFT' 100; font-size: 18px; line-height: 1.35; color: var(--ink); opacity: .88; animation: quote-in .8s ease both; text-wrap: pretty; }
+.greet .greet-date { margin-top: 10px; font-size: 14px; letter-spacing: .02em; }
+@keyframes quote-in { from { opacity: 0; transform: translateY(4px); } to { opacity: .88; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .greet .quote { animation: none; } }
+/* Autonomie: grows freely in its own direction, an uneven leafy edge and fine upward strokes */
+.fill-autonomy .fill-bar { background: repeating-linear-gradient(80deg, transparent 0 9px, color-mix(in srgb, var(--c) 78%, #fff) 9px 10.5px), var(--c); transition-duration: 1.1s; transition-timing-function: cubic-bezier(.25, .9, .35, 1); }
+.fill-autonomy .fill-edge { height: 18px; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='18' viewBox='0 0 90 18' preserveAspectRatio='none'%3E%3Cpath d='M0 18V12C8 4 14 2 20 8C25 13 30 6 38 3C46 0 50 10 58 11C66 12 70 2 78 4C84 6 88 10 90 12V18Z' fill='%23000'/%3E%3C/svg%3E") 0 0 / 90px 100% repeat-x; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='18' viewBox='0 0 90 18' preserveAspectRatio='none'%3E%3Cpath d='M0 18V12C8 4 14 2 20 8C25 13 30 6 38 3C46 0 50 10 58 11C66 12 70 2 78 4C84 6 88 10 90 12V18Z' fill='%23000'/%3E%3C/svg%3E") 0 0 / 90px 100% repeat-x; }
+.why-first { margin: 0 0 16px; padding: 14px 16px; border-radius: 18px; background: var(--on-bg); color: var(--on-ink);
+  font-family: 'Fraunces', Georgia, serif; font-style: italic; font-variation-settings: 'SOFT' 100; font-size: 19px; line-height: 1.4; }
+.why-label { display: block; font-family: 'Figtree', system-ui, sans-serif; font-style: normal; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .7; margin-bottom: 4px; }
+.detail-cue { margin: 10px 0 0; }
+
+/* themes: fold and reorder */
+.theme-list { position: relative; }
+.theme-head { display: flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 6px; }
+.theme-toggle { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px; text-align: left; color: inherit; }
+.theme-toggle .theme-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.theme-count { font-size: 14px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.chev { width: 20px; height: 20px; flex: none; color: var(--ink-soft); transition: transform .25s ease; margin-left: auto; }
+.folded .chev { transform: rotate(-90deg); }
+.drag-handle { flex: none; width: 44px; height: 44px; border: 0; background: none; border-radius: 14px; color: var(--ink-soft);
+  touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: grab; display: grid; place-items: center; }
+.drag-handle svg { width: 22px; height: 22px; fill: currentColor; opacity: .7; }
+.dragging, .dragging * { -webkit-user-select: none; user-select: none; }
+.dragging .drag-handle { cursor: grabbing; }
+.theme-block { transition: box-shadow .2s ease; border-radius: 20px; }
+.theme-list.dragging .theme-block { margin-top: 10px; padding: 4px 4px 0; }
+.theme-block.lifted { position: relative; z-index: 5; background: var(--paper); box-shadow: 0 10px 30px rgba(60, 50, 90, .18); }
+.theme-block.folded .theme-head { margin-bottom: 0; }

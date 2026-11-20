@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStore } from '../store';
 import type { Pronoun } from '../greetings';
 import { Sheet } from './Sheet';
+import { RestoreButton } from './RestoreButton';
 
 export const PRONOUNS: { value: Exclude<Pronoun, ''>; label: string }[] = [
   { value: 'she', label: 'sie/ihr' },
@@ -59,6 +60,7 @@ export function Welcome() {
         <p className="muted small">Damit dich werde richtig begrüsst. Du kannst beides jederzeit unter „Dein Raum“ ändern.</p>
         <button className="primary" type="submit">Los geht’s</button>
         <button className="text-btn" type="button" onClick={() => done(false)}>Überspringen</button>
+        {data.goals.length === 0 && <RestoreButton className="text-btn" label="Ich habe eine Sicherung" />}
       </form>
     </Sheet>
   );

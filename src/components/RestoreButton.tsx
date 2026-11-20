@@ -21,7 +21,7 @@ export function RestoreButton({ className = 'secondary', label = 'Kopie zurückh
 
   return (
     <>
-      <button className={className} onClick={() => file.current?.click()}>{label}</button>
+      <button type="button" className={className} onClick={() => file.current?.click()}>{label}</button>
       <input ref={file} type="file" accept=".json,application/json,text/plain,application/octet-stream" hidden
         onChange={(e) => pick(e.target.files?.[0])} />
       {note && <p className="notice small" role="status">{note}</p>}

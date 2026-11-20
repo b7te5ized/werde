@@ -30,7 +30,7 @@ export default function App() {
   const [quick, setQuick] = useState(() => location.hash === '#quick' || (isStandalone() && data.settings.openInQuickLog));
   const [sheet, setSheet] = useState<Sheet>(null);
   useReminders();
-  const sky = useSky(data.settings.skyMode, data.settings.weatherOn);
+  const sky = useSky(data.settings.skyMode);
   useEffect(() => { window.scrollTo(0, 0); }, [tab, quick]);
   const close = () => setSheet(null);
   const findGoal = (id: string) => data.goals.find((g) => g.id === id);

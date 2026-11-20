@@ -6,7 +6,8 @@ export const CATEGORIES: { value: Category; label: string; hint: string }[] = [
   { value: 'move', label: 'Bewegung', hint: 'schwungvoll wie ein Pinselstrich' },
   { value: 'connect', label: 'Verbindung', hint: 'verbunden wie Kreise' },
   { value: 'meaning', label: 'Sinn', hint: 'leuchtet wie ein Sonnenaufgang' },
-  { value: 'play', label: 'Autonomie & Spiel', hint: 'hüpft mit Punkten' },
+  { value: 'autonomy', label: 'Autonomie', hint: 'wächst frei in die eigene Richtung' },
+  { value: 'play', label: 'Spiel', hint: 'hüpft mit Punkten' },
 ];
 
 export const categoryOf = (g: Goal): Category => g.category ?? 'nourish';

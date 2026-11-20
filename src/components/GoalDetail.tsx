@@ -25,6 +25,12 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
 
   return (
     <Sheet title={goal.name} onClose={onClose}>
+      {goal.why && (
+        <blockquote className="why-first">
+          <span className="why-label">Dein Warum</span>
+          {goal.why}
+        </blockquote>
+      )}
       <div className="detail-hero" role="img" aria-label={`${progressLabel(goal, p)} ${PERIOD_LABEL[goal.period]}`}>
         <Fill pct={p.pct} color={sw.base} category={categoryOf(goal)} />
         <div>
@@ -33,12 +39,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
           {r.streak >= 2 && !goal.paused && <p className="muted">🌱 {r.streak} {many} dabei</p>}
         </div>
       </div>
-      {(goal.cue || goal.why) && (
-        <div className="why-card">
-          {goal.cue && <p className="muted">{cueText(goal.cue)}</p>}
-          {goal.why && <p><b>Warum es dir wichtig ist:</b> {goal.why}</p>}
-        </div>
-      )}
+      {goal.cue && <p className="muted detail-cue">{cueText(goal.cue)}</p>}
 
       {!goal.paused && (
         <form className="row log-custom" onSubmit={(e) => { e.preventDefault(); if (n) { log(goal.id, n); setAmount(''); } }}>

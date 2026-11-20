@@ -92,16 +92,11 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
       </section>
 
       <section className="card settings">
-        <h2>Licht und Wetter</h2>
+        <h2>Licht</h2>
         <label className="toggle">
           <span>Farben folgen der Tageszeit</span>
           <input type="checkbox" checked={s.skyMode === 'auto'} onChange={(e) => saveSettings({ skyMode: e.target.checked ? 'auto' : 'light' })} />
         </label>
-        <label className="toggle">
-          <span>Wetter im Himmel zeigen</span>
-          <input type="checkbox" checked={s.weatherOn} onChange={(e) => saveSettings({ weatherOn: e.target.checked })} />
-        </label>
-        <p className="muted small">Nutzt deinen ungefähren Standort, auf etwa 10 km genau.</p>
       </section>
 
       <section className="card settings">

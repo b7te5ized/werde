@@ -8,7 +8,7 @@ const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v6' : 'werde.data.v1';
 
 const DEFAULT_SETTINGS: Settings = {
   reminderHours: 5, quietStart: '22:00', quietEnd: '07:00', celebrations: true,
-  remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', weatherOn: false, breathingMoment: false, restUntil: 0, name: '', pronoun: '', customPronoun: '', welcomed: false, lastBackupAt: 0, backupSnoozeUntil: 0,
+  remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', breathingMoment: false, restUntil: 0, name: '', pronoun: '', customPronoun: '', welcomed: false, lastBackupAt: 0, backupSnoozeUntil: 0,
 };
 
 function empty(): Data {
@@ -87,6 +87,8 @@ interface Store {
   undo: () => void;
   saveTheme: (t: Theme) => void;
   deleteTheme: (id: string) => void;
+  reorderThemes: (ids: string[]) => void;
+  toggleThemeOpen: (id: string) => void;
   saveGoal: (g: Goal) => void;
   deleteGoal: (id: string) => void;
   log: (goalId: string, amount: number) => void;
@@ -195,6 +197,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     dismissToast: () => setToast(null),
     undo,
     saveTheme: (t) => change((d) => ({ ...d, themes: upsert(d.themes, t) })),
+    reorderThemes: (ids) => change((d) => {
+      const byId = new Map(d.themes.map((t) => [t.id, t]));
+      const next = ids.map((id) => byId.get(id)).filter((t): t is Theme => !!t);
+      for (const t of d.themes) if (!ids.includes(t.id)) next.push(t);
+      return { ...d, themes: next };
+    }, 'Reihenfolge geändert'),
+    toggleThemeOpen: (id) => setData((d) => ({ ...d, themes: d.themes.map((t) => (t.id === id ? { ...t, collapsed: !t.collapsed } : t)) })),
     deleteTheme: (id) =>
       change((d) => {
         const goalIds = new Set(d.goals.filter((g) => g.themeId === id).map((g) => g.id));
@@ -267,7 +276,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     saveSettings: (s) => setData((d) => ({ ...d, settings: { ...d.settings, ...s } })),
     addNote: (text) => setData((d) => ({ ...d, notes: [{ id: uid(), text, at: Date.now() }, ...d.notes] })),
     removeNote: (id) => change((d) => ({ ...d, notes: d.notes.filter((n) => n.id !== id) }), 'Notiz entfernt'),
-    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now() }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, notes: nd.notes ?? [], celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
+    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now(), welcomed: true }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, notes: nd.notes ?? [], celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
   };
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>;

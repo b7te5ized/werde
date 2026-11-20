@@ -2,7 +2,7 @@ export type PaletteKey = 'meadow' | 'pond' | 'sun' | 'blossom' | 'lilac' | 'sky'
 export type Period = 'day' | 'week' | 'month';
 export type Direction = 'more' | 'less';
 export type StatusStyle = 'bar' | 'ring' | 'plant' | 'vessel';
-export type Category = 'nourish' | 'restore' | 'move' | 'connect' | 'meaning' | 'play';
+export type Category = 'nourish' | 'restore' | 'move' | 'connect' | 'meaning' | 'autonomy' | 'play';
 
 export interface Theme {
   id: string;
@@ -10,6 +10,8 @@ export interface Theme {
   color: PaletteKey;
   icon: string;
   createdAt: number;
+  /** goals hidden on the Today view */
+  collapsed?: boolean;
 }
 
 export interface Goal {
@@ -50,7 +52,6 @@ export interface Settings {
   firstOpenedAt: number;
   openInQuickLog: boolean;
   skyMode: 'auto' | 'light';
-  weatherOn: boolean;
   breathingMoment: boolean;
   restUntil: number;
   /** how werde greets you */
