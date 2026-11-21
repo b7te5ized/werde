@@ -21,7 +21,7 @@ export function Overview() {
 
   return (
     <main className="view">
-      <header className="greet top"><h1>Rückblick</h1><p>Wie deine Tage gewachsen sind.</p></header>
+      <header className="greet top"><h1>Fortschritt</h1><p>Wie deine Tage gewachsen sind.</p></header>
 
       {themes.length > 1 && (
         <div className="chips filter" role="group" aria-label="Nach Thema filtern">

@@ -12,7 +12,7 @@ export function phaseFor(d: Date): Phase {
 }
 
 /** Follows the time of day and paints it onto the root element. */
-export function useSky(mode: 'auto' | 'light'): Sky {
+export function useSky(mode: 'auto' | 'light' | 'dark'): Sky {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const id = window.setInterval(() => setNow(new Date()), 60_000);
@@ -21,7 +21,7 @@ export function useSky(mode: 'auto' | 'light'): Sky {
     return () => { window.clearInterval(id); document.removeEventListener('visibilitychange', onVis); };
   }, []);
 
-  const phase: Phase = mode === 'light' ? 'day' : phaseFor(now);
+  const phase: Phase = mode === 'light' ? 'day' : mode === 'dark' ? 'night' : phaseFor(now);
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('phase-dawn', 'phase-day', 'phase-dusk', 'phase-night');

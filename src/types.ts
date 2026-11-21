@@ -51,7 +51,7 @@ export interface Settings {
   lastNudgeAt: number;
   firstOpenedAt: number;
   openInQuickLog: boolean;
-  skyMode: 'auto' | 'light';
+  skyMode: 'auto' | 'light' | 'dark';
   breathingMoment: boolean;
   restUntil: number;
   /** how werde greets you */

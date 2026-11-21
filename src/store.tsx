@@ -257,8 +257,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         else if (before.missedLast && !data.logs.some((l) => l.goalId === goalId && l.at >= ps)) note = 'Schön, dass du wieder da bist';
       }
       change((d) => ({ ...d, logs: [...d.logs, entry], celebrated }), note ? `Notiert · ${note}` : 'Notiert');
-      if (cel && data.settings.celebrations) setCelebration(cel);
-      else if (!cel && data.settings.breathingMoment) setBreathing(true);
+      if (cel) setCelebration(cel);
     },
     deleteLog: (id) => change((d) => ({ ...d, logs: d.logs.filter((l) => l.id !== id) }), 'Eintrag entfernt'),
     toggleRestDay: (day) => {

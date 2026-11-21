@@ -1,5 +1,5 @@
 /* werde service worker: offline app shell + notification clicks. */
-const CACHE = 'werde-v1';
+const CACHE = 'werde-v2';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './index.html', './manifest.webmanifest', './icon.svg', './apple-touch-icon.png', './icon-192.png'])));

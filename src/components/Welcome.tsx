@@ -32,7 +32,7 @@ export function PronounPicker({ value, custom, onChange, onCustom }: {
   );
 }
 
-/** Asked once, on the very first open. Everything can be changed later in "Dein Raum". */
+/** Asked once, on the very first open. Everything can be changed later in "Einstellungen". */
 export function Welcome() {
   const { data, sync, saveSettings } = useStore();
   const s = data.settings;
@@ -57,7 +57,7 @@ export function Welcome() {
           <span>Deine Pronomen</span>
           <PronounPicker value={pronoun} custom={custom} onChange={setPronoun} onCustom={setCustom} />
         </div>
-        <p className="muted small">Damit dich werde richtig begrüsst. Du kannst beides jederzeit unter „Dein Raum“ ändern.</p>
+        <p className="muted small">Damit dich werde richtig begrüsst. Du kannst beides jederzeit unter „Einstellungen“ ändern.</p>
         <button className="primary" type="submit">Los geht’s</button>
         <button className="text-btn" type="button" onClick={() => done(false)}>Überspringen</button>
         {data.goals.length === 0 && <RestoreButton className="text-btn" label="Ich habe eine Sicherung" />}
