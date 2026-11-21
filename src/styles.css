@@ -451,7 +451,7 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .note-add textarea { flex: 1; min-width: 0; resize: none; border-radius: 14px; border: 2px solid var(--line); background: var(--paper); padding: 10px 12px; font-size: 16px; line-height: 1.35; }
 .note-list { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; }
 .note-list li { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; padding: 10px 0; border-top: 1.5px dashed var(--line); }
-.note-text { font-family: var(--font-head); font-style: italic; font-variation-settings: 'SOFT' 100; font-size: 17px; overflow-wrap: anywhere; }
+.note-text { font-family: var(--font-head); font-style: italic; font-variation-settings: 'SOFT' 100; font-size: 17px; overflow-wrap: break-word; }
 .note-date { font-size: 13px; color: var(--ink-soft); }
 .nowrap { white-space: nowrap; }
 .goal-name { font-family: var(--font-head); font-weight: 600; font-variation-settings: 'SOFT' 100, 'WONK' 1; font-size: 19px; letter-spacing: -0.01em; }
@@ -582,34 +582,34 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .goal-meta { align-self: flex-start; }
 .goal-open { display: block; width: 100%; min-width: 0; }
 .goal-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3;
-  white-space: normal; overflow: hidden; overflow-wrap: anywhere; hyphens: auto; line-height: 1.22; text-overflow: clip; }
-.goal-cue { overflow-wrap: anywhere; }
+  white-space: normal; overflow: hidden; overflow-wrap: break-word;  line-height: 1.22; text-overflow: clip; }
+.goal-cue { overflow-wrap: break-word; }
 .goal-pct { flex: 0 0 auto; min-width: 3.1em; text-align: right; align-self: center; white-space: nowrap; }
-.goal-meta .goal-amount { overflow-wrap: anywhere; min-width: 0; }
+.goal-meta .goal-amount { overflow-wrap: break-word; min-width: 0; }
 .add-btn { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-.theme-toggle .theme-name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; line-height: 1.2; }
+.theme-toggle .theme-name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: break-word; line-height: 1.2; }
 .theme-toggle > * { flex-shrink: 0; }
 .theme-toggle .theme-name { flex: 0 1 auto; min-width: 0; }
-.quick-name, .week-goal-name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.quick-name, .week-goal-name { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
 .sheet-head { min-width: 0; }
-.sheet-head h2 { min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
-.goal-stats .gs-top > :first-child { min-width: 0; overflow-wrap: anywhere; }
+.sheet-head h2 { min-width: 0; overflow-wrap: break-word;  }
+.goal-stats .gs-top > :first-child { min-width: 0; overflow-wrap: break-word; }
 .goal-stats .gs-top > :last-child { flex: none; }
-.why-first, .quote, .notes-list li, .entries li > :first-child { overflow-wrap: anywhere; }
+.why-first, .quote, .notes-list li, .entries li > :first-child { overflow-wrap: break-word; }
 .setting-row .row:has(input[type=time]) { flex-wrap: wrap; row-gap: 8px; }
 .setting-row input[type=time] { min-width: 7.2em; }
-.setting-row > span:first-child, .setting-row label { min-width: 0; overflow-wrap: anywhere; }
+.setting-row > span:first-child, .setting-row label { min-width: 0; overflow-wrap: break-word; }
 .setting-row .row .unit-hint { flex: none; }
 .setting-row input[type=time] { flex: 1 1 7.2em; padding: 12px 6px; }
 
 /* Daily note per goal */
 .day-note { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; font-weight: 800; }
 .day-note textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 84px; font: inherit; font-weight: 400;
-  font-family: var(--font-head); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-size: 17px; line-height: 1.4; overflow-wrap: anywhere; }
+  font-family: var(--font-head); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-size: 17px; line-height: 1.4; overflow-wrap: break-word; }
 .day-notes { list-style: none; margin: 0; padding: 0 16px 12px; }
 .day-notes li { padding: 10px 0; border-bottom: 1px solid var(--line, rgba(0,0,0,.08)); }
 .day-notes li:last-child { border-bottom: 0; }
-.day-notes p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-head); font-variation-settings: 'SOFT' 100, 'WONK' 1; }
+.day-notes p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: break-word; font-family: var(--font-head); font-variation-settings: 'SOFT' 100, 'WONK' 1; }
 .day-note-add { width: 100%; margin-top: 18px; }
 
 /* whole goal card opens the detail */
@@ -660,3 +660,10 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .cat-grid.fills .cat-tile { height: 72px; padding: 0; border-width: 3px; }
 .cat-grid.fills .cat-tile.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--paper) inset; }
 .fill-hint { margin: -2px 0 10px; }
+/* home header: square + for a new goal, quick log under the quote */
+.add-goal-btn { flex: none; width: 44px; height: 44px; border-radius: 14px; border: 0; display: grid; place-items: center;
+  background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); padding: 0; }
+.add-goal-btn svg { width: 22px; height: 22px; }
+.quick-entry-btn { margin-top: 22px; align-self: flex-start; }
+/* whole words only: no hyphenation anywhere */
+html, body, * { hyphens: manual; -webkit-hyphens: manual; }

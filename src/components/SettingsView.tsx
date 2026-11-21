@@ -151,7 +151,7 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
         <FontPicker title={tr('Schrift für Überschriften', 'Font for headings')} fonts={HEAD_FONTS} value={s.fontHead ?? 'fraunces'} onChange={(fontHead) => saveSettings({ fontHead })} />
         <FontPicker title={tr('Schrift für Text', 'Font for text')} fonts={BODY_FONTS} value={s.fontBody ?? 'figtree'} onChange={(fontBody) => saveSettings({ fontBody })} />
         <label className="toggle">
-          <span>{tr('Direkt mit „Erfassen“ starten', 'Open straight into “Log”')}</span>
+          <span>{tr('Direkt mit dem Schnelleintrag starten', 'Open straight into quick log')}</span>
           <input type="checkbox" checked={s.openInQuickLog} onChange={(e) => saveSettings({ openInQuickLog: e.target.checked })} />
         </label>
       </section>

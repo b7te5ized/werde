@@ -14,7 +14,7 @@ export function QuickLog({ onClose }: { onClose: () => void }) {
     <main className="view quick">
       <header className="greet top quick-head">
         <div>
-          <h1>{tr('Erfassen', 'Log')}</h1>
+          <h1>{tr('Schnelleintrag', 'Quick log')}</h1>
         </div>
         <button className="secondary" onClick={onClose}>{tr('Fertig', 'Done')}</button>
       </header>
