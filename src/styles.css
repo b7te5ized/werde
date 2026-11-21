@@ -655,3 +655,8 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .toast { top: calc(12px + env(safe-area-inset-top)); bottom: auto; }
 @container (max-width: 280px) { .goal-amount .streak { display: none; } }
 @media (max-width: 340px) { .goal-pct { font-size: 22px; min-width: 2.8em; } .goal-card { gap: 10px; padding-right: 12px; } }
+/* fill picker: choose the look of the card itself, no labels */
+.cat-grid.fills { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+.cat-grid.fills .cat-tile { height: 72px; padding: 0; border-width: 3px; }
+.cat-grid.fills .cat-tile.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--paper) inset; }
+.fill-hint { margin: -2px 0 10px; }

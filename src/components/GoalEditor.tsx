@@ -128,13 +128,13 @@ export function GoalEditor({ goal, defaultThemeId, onClose }: { goal?: Goal; def
         </label>
 
         <fieldset className="field">
-          <legend>{tr('Was für eine Gewohnheit ist es?', 'What kind of habit is it?')}</legend>
-          <div className="cat-grid">
+          <legend>{tr('Füllung', 'Fill')}</legend>
+          <p className="muted small fill-hint">{tr('So füllt sich deine Karte. Tippe auf die, die dir gefällt.', 'How your card fills up. Tap the one you like.')}</p>
+          <div className="cat-grid fills" role="radiogroup" aria-label={tr('Füllung', 'Fill')}>
             {CATEGORIES.map((c) => (
-              <button type="button" key={c.value} className={`cat-tile${category === c.value ? ' on' : ''}`}
-                aria-pressed={category === c.value} onClick={() => setCategory(c.value)} aria-label={c.label}>
-                <Fill pct={0.55} color={previewColor.base} category={c.value} />
-                {c.label}
+              <button type="button" key={c.value} role="radio" className={`cat-tile${category === c.value ? ' on' : ''}`}
+                aria-checked={category === c.value} onClick={() => setCategory(c.value)} aria-label={c.style}>
+                <Fill pct={0.6} color={previewColor.base} category={c.value} />
               </button>
             ))}
           </div>
