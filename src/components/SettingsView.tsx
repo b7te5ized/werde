@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { RestoreButton } from './RestoreButton';
 import { PronounPicker } from './Welcome';
 import { Notes } from './Notes';
+import { TextsEditor } from './TextsEditor';
 import { Segmented } from './Sheet';
 import { enableNotifications } from '../useReminders';
 import { isStandalone } from '../pwa';
@@ -16,6 +17,8 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
   const restingToday = data.restDays.includes(dayKey(new Date()));
   const s = data.settings;
   const [notice, setNotice] = useState('');
+  const [textsOpen, setTextsOpen] = useState(false);
+  const [editThemes, setEditThemes] = useState(false);
 
   const toggleReminders = async (on: boolean) => {
     if (!on) { saveSettings({ remindersOn: false }); setNotice(''); return; }
@@ -52,6 +55,26 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
         </div>
       </section>
 
+      <section className="card settings">
+        <h2>Backup</h2>
+        <p className="muted small">
+          {sync === 'account' ? 'Gespeichert in deinem Claude-Konto, privat nur für dich. Kein Tracking.'
+            : sync === 'connecting' ? 'Verbinde …' : 'Deine Daten liegen nur in diesem Browser auf diesem Gerät. Sichere ab und zu eine Kopie, zum Beispiel in Dateien oder Google Drive. Wichtig: bevor du werde vom Home-Bildschirm löschst, zuerst eine Kopie sichern.'}
+        </p>
+        {sync !== 'account' && s.lastBackupAt > s.firstOpenedAt && (
+          <p className="muted small">Letzte Kopie: {new Date(s.lastBackupAt).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })}</p>
+        )}
+        <div className="row">
+          <button className="secondary" onClick={backup}>Kopie sichern</button>
+          <RestoreButton label="Backup laden" />
+        </div>
+        {!isStandalone() && (
+          <p className="small home-hint">
+            <b>iPhone:</b> in Safari auf <b>Teilen</b>, dann <b>Zum Home-Bildschirm</b>. <b>Android:</b> im Browser-Menü <b>⋮</b> auf <b>Zum Startbildschirm hinzufügen</b>. Dann öffnet sich werde wie eine App.
+          </p>
+        )}
+      </section>
+
       <Notes />
 
       <section className="card settings">
@@ -84,7 +107,7 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
       </section>
 
       <section className="card settings">
-        <h2>Benachrichtigung</h2>
+        <h2>Benachrichtigungen</h2>
         <label className="toggle">
           <span>Erinnere mich sanft</span>
           <input type="checkbox" checked={s.remindersOn} onChange={(e) => toggleReminders(e.target.checked)} />
@@ -119,36 +142,30 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
       </section>
 
       <section className="card settings">
-        <h2>Themen</h2>
-        {data.themes.length === 0 && <p className="muted">Noch keine Themen.</p>}
-        {data.themes.map((t) => (
-          <button key={t.id} className="theme-row" onClick={() => onEditTheme(t)}>
-            <span className="theme-icon" style={{ background: PALETTE[t.color].soft }}>{t.icon}</span>
-            <span>{t.name}</span>
-            <span className="muted">{data.goals.filter((g) => g.themeId === t.id).length} Ziele</span>
-          </button>
-        ))}
+        <div className="card-head"><h2>Begrüssungen & Sprüche</h2>
+          <button type="button" className="text-btn" onClick={() => setTextsOpen(true)}>Bearbeiten</button></div>
+        <p className="muted small">{data.texts ? 'Deine eigenen Texte.' : 'Schreib eigene Begrüssungen und Sprüche oder ändere die bestehenden.'}</p>
       </section>
 
       <section className="card settings">
-        <h2>Backup</h2>
-        <p className="muted small">
-          {sync === 'account' ? 'Gespeichert in deinem Claude-Konto, privat nur für dich. Kein Tracking.'
-            : sync === 'connecting' ? 'Verbinde …' : 'Deine Daten liegen nur in diesem Browser auf diesem Gerät. Sichere ab und zu eine Kopie, zum Beispiel in Dateien oder Google Drive. Wichtig: bevor du werde vom Home-Bildschirm löschst, zuerst eine Kopie sichern.'}
-        </p>
-        {sync !== 'account' && s.lastBackupAt > s.firstOpenedAt && (
-          <p className="muted small">Letzte Kopie: {new Date(s.lastBackupAt).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })}</p>
-        )}
-        <div className="row">
-          <button className="secondary" onClick={backup}>Kopie sichern</button>
-          <RestoreButton label="Backup laden" />
-        </div>
-        {!isStandalone() && (
-          <p className="small home-hint">
-            <b>iPhone:</b> in Safari auf <b>Teilen</b>, dann <b>Zum Home-Bildschirm</b>. <b>Android:</b> im Browser-Menü <b>⋮</b> auf <b>Zum Startbildschirm hinzufügen</b>. Dann öffnet sich werde wie eine App.
-          </p>
-        )}
+        <div className="card-head"><h2>Themen</h2>
+          {data.themes.length > 0 && <button type="button" className="text-btn" onClick={() => setEditThemes(!editThemes)}>{editThemes ? 'Fertig' : 'Bearbeiten'}</button>}</div>
+        {data.themes.length === 0 && <p className="muted">Noch keine Themen.</p>}
+        {data.themes.map((t) => editThemes ? (
+          <button key={t.id} className="theme-row editing" onClick={() => onEditTheme(t)} aria-label={`${t.name} bearbeiten`}>
+            <span className="theme-icon" style={{ background: PALETTE[t.color].soft }}>{t.icon}</span>
+            <span>{t.name}</span>
+            <svg className="row-chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        ) : (
+          <div key={t.id} className="theme-row">
+            <span className="theme-icon" style={{ background: PALETTE[t.color].soft }}>{t.icon}</span>
+            <span>{t.name}</span>
+            <span className="muted">{data.goals.filter((g) => g.themeId === t.id).length} Ziele</span>
+          </div>
+        ))}
       </section>
+    {textsOpen && <TextsEditor onClose={() => setTextsOpen(false)} />}
     </main>
   );
 }

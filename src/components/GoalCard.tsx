@@ -17,15 +17,16 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
 
   return (
     <article className="goal-wrap">
-      <div className={`goal-card${goal.paused ? ' paused' : ''}${reached ? ' reached' : ''}`}>
+      <div className={`goal-card${goal.paused ? ' paused' : ''}${reached ? ' reached' : ''}`}
+        onClick={(e) => { if (!(e.target as HTMLElement).closest('.add-btn')) onOpen(); }}>
         <Fill pct={todayFill(goal, data.logs)} color={sw.base} category={categoryOf(goal)} />
         <div className="goal-main">
-          <button className="goal-open" onClick={onOpen}
+          <button className="goal-open"
             aria-label={`${goal.name}, ${label} ${PERIOD_LABEL[goal.period]}${r.streak >= 2 ? `, ${r.streak} ${UNIT_WORD[goal.period][1]} dabei` : ''}. Details öffnen`}>
             <span className="goal-name">{goal.name}</span>
           </button>
           <span className="goal-meta">
-            <span className="goal-amount" onClick={onOpen}>
+            <span className="goal-amount">
               {fmt(p.amount)} / {fmt(goal.target)} {goal.unit}
               {goal.period !== 'day' && ` · ${PERIOD_LABEL[goal.period]}`}
               {!goal.paused && goal.direction === 'more' && r.streak >= 2 && <span className="streak"> · {r.streak} {UNIT_WORD[goal.period][1]}</span>}
@@ -37,9 +38,9 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
               </button>
             )}
           </span>
-          {goal.cue && <span className="goal-cue" onClick={onOpen}>{cueText(goal.cue)}</span>}
+          {goal.cue && <span className="goal-cue">{cueText(goal.cue)}</span>}
         </div>
-        <button className="goal-pct" onClick={onOpen} tabIndex={-1} aria-hidden="true">{Math.round(p.pct * 100)}%</button>
+        <span className="goal-pct" aria-hidden="true">{Math.round(p.pct * 100)}%</span>
       </div>
     </article>
   );

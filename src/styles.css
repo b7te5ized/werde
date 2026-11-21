@@ -609,3 +609,22 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .day-notes li:last-child { border-bottom: 0; }
 .day-notes p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: 'Fraunces', Georgia, serif; font-variation-settings: 'SOFT' 100, 'WONK' 1; }
 .day-note-add { width: 100%; margin-top: 18px; }
+
+/* whole goal card opens the detail */
+.goal-card { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.goal-pct { pointer-events: none; }
+/* card header with an action on the right */
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.card-head h2 { margin: 0; min-width: 0; }
+.card-head .text-btn { flex: none; font-weight: 800; }
+.theme-row.editing { cursor: pointer; }
+.theme-row .row-chev { width: 18px; height: 18px; flex: none; opacity: .6; }
+/* own greetings and quotes */
+.texts-group { margin-top: 20px; }
+.texts-group h3 { margin: 0 0 8px; font-size: 15px; font-weight: 800; }
+.texts-group ul { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.texts-group li { display: flex; align-items: center; gap: 8px; }
+.texts-group li input, .texts-group li textarea { flex: 1; min-width: 0; font: inherit; }
+.texts-group li textarea { resize: vertical; }
+.texts-group .chip-x:disabled { opacity: .3; }
+.texts-reset { margin-top: 20px; }

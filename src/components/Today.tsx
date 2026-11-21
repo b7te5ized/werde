@@ -24,17 +24,17 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
   const now = new Date();
   const pronoun = data.settings.pronoun;
   const nm = data.settings.name;
-  const [greet, setGreet] = useState(() => pickGreeting(now, nm, pronoun));
-  const [quote, setQuote] = useState(() => pickQuote(nm, pronoun));
+  const [greet, setGreet] = useState(() => pickGreeting(now, nm, pronoun, data.texts));
+  const [quote, setQuote] = useState(() => pickQuote(nm, pronoun, data.texts));
   // A fresh line each time werde is opened again, and when the time of day changes.
-  useEffect(() => { setGreet(pickGreeting(new Date(), nm, pronoun)); setQuote(pickQuote(nm, pronoun)); }, [nm, pronoun]);
+  useEffect(() => { setGreet(pickGreeting(new Date(), nm, pronoun, data.texts)); setQuote(pickQuote(nm, pronoun, data.texts)); }, [nm, pronoun, data.texts]);
   useEffect(() => {
     let slot = slotFor(new Date());
-    const again = () => { if (document.visibilityState === 'visible') { setGreet(pickGreeting(new Date(), nm, pronoun)); setQuote(pickQuote(nm, pronoun)); } };
+    const again = () => { if (document.visibilityState === 'visible') { setGreet(pickGreeting(new Date(), nm, pronoun, data.texts)); setQuote(pickQuote(nm, pronoun, data.texts)); } };
     const tick = window.setInterval(() => { const s = slotFor(new Date()); if (s !== slot) { slot = s; again(); } }, 60_000);
     document.addEventListener('visibilitychange', again);
     return () => { document.removeEventListener('visibilitychange', again); window.clearInterval(tick); };
-  }, [nm, pronoun]);
+  }, [nm, pronoun, data.texts]);
   const active = data.goals.filter((g) => !g.paused);
   const showBackup = sync === 'local' && !inClaude && backupDue(data);
 

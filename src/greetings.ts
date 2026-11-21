@@ -52,10 +52,32 @@ export function renderText(text: Text, name: string, pronoun: Pronoun): string {
   return n ? t.replace(/\{name\}/g, n) : t.replace(/,?\s*\{name\}/g, '');
 }
 
+/** Texts the person wrote or edited themselves. Missing means the built-in lines are used. */
+export interface CustomTexts { greetings: Record<Slot, string[]>; quotes: string[] }
+
+export const SLOT_ICON: Record<Slot, GreetIconKind> = { morning: 'sunrise', lunch: 'sparkles', afternoon: 'sparkles', evening: 'star', night: 'moon' };
+export const SLOT_LABEL: Record<Slot, string> = { morning: 'Morgen (5 bis 11 Uhr)', lunch: 'Mittag (11 bis 14 Uhr)', afternoon: 'Nachmittag (14 bis 17 Uhr)', evening: 'Abend (17 bis 22 Uhr)', night: 'Nacht (22 bis 5 Uhr)' };
+export const SLOTS: Slot[] = ['morning', 'lunch', 'afternoon', 'evening', 'night'];
+
+/** The built-in lines as editable plain text (a starting point for the person's own). */
+export function defaultTexts(): CustomTexts {
+  const plain = (t: Text) => (typeof t === 'string' ? t : t.they);
+  return {
+    greetings: Object.fromEntries(SLOTS.map((k) => [k, GREETINGS[k].map((l) => plain(l.text))])) as Record<Slot, string[]>,
+    quotes: QUOTES.map(plain),
+  };
+}
+
+function linesFor(slot: Slot, custom?: CustomTexts): Line[] {
+  const own = custom?.greetings?.[slot]?.filter((t) => t.trim());
+  if (!own || own.length === 0) return GREETINGS[slot];
+  return own.map((text) => GREETINGS[slot].find((l) => l.text === text) ?? { text, icon: SLOT_ICON[slot] });
+}
+
 let lastPick = '';
 /** A random line from this time of day, never the same one twice in a row. */
-export function pickGreeting(now: Date, name: string, pronoun: Pronoun): { text: string; icon: GreetIconKind } {
-  const lines = GREETINGS[slotFor(now)];
+export function pickGreeting(now: Date, name: string, pronoun: Pronoun, custom?: CustomTexts): { text: string; icon: GreetIconKind } {
+  const lines = linesFor(slotFor(now), custom);
   const pool = lines.length > 1 ? lines.filter((l) => JSON.stringify(l.text) !== lastPick) : lines;
   const line = pool[Math.floor(Math.random() * pool.length)];
   lastPick = JSON.stringify(line.text);
@@ -74,9 +96,11 @@ export const QUOTES: Text[] = [
 ];
 
 let lastQuote = -1;
-export function pickQuote(name: string, pronoun: Pronoun): string {
-  let i = Math.floor(Math.random() * QUOTES.length);
-  if (i === lastQuote) i = (i + 1) % QUOTES.length;
+export function pickQuote(name: string, pronoun: Pronoun, custom?: CustomTexts): string {
+  const own = custom?.quotes?.filter((t) => t.trim());
+  const list: Text[] = own && own.length ? own : QUOTES;
+  let i = Math.floor(Math.random() * list.length);
+  if (i === lastQuote && list.length > 1) i = (i + 1) % list.length;
   lastQuote = i;
-  return renderText(QUOTES[i], name, pronoun);
+  return renderText(list[i], name, pronoun);
 }

@@ -83,6 +83,8 @@ export interface Data {
   notes: Note[];
   /** short daily notes per goal: goalId -> dayKey -> text (optional so older data and backups stay valid) */
   dayNotes?: Record<string, Record<string, string>>;
+  /** the person's own greetings and quotes (optional; built-in lines when missing) */
+  texts?: import('./greetings').CustomTexts;
 }
 
 export interface Note { id: string; text: string; at: number }
