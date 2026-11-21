@@ -34,9 +34,8 @@ export function GoalEditor({ goal, defaultThemeId, onClose }: { goal?: Goal; def
   const valid = name.trim() && unit && tgt > 0 && s > 0 && (newTheme ? themeName.trim() : themeId);
   const previewColor = newTheme ? PALETTE[themeColor] : PALETTE[data.themes.find((x) => x.id === themeId)?.color ?? 'meadow'];
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!valid) return;
+  const save = () => {
+    if (!valid) return false;
     let tid = themeId;
     if (newTheme) {
       const th: Theme = { id: uid(), name: themeName.trim(), color: themeColor, icon: themeIcon, createdAt: Date.now() };
@@ -48,11 +47,15 @@ export function GoalEditor({ goal, defaultThemeId, onClose }: { goal?: Goal; def
       paused: goal?.paused ?? false, createdAt: goal?.createdAt ?? Date.now(),
       cue: cue.trim() || undefined, why: why.trim() || undefined,
     });
-    onClose();
+    return true;
   };
+  const submit = (e?: React.FormEvent) => { e?.preventDefault(); if (save()) onClose(); };
+  // a tap outside keeps what is valid, so nothing gets lost by accident
+  const outside = () => { save(); onClose(); };
 
   return (
-    <Sheet title={goal ? tr('Ziel bearbeiten', 'Edit goal') : tr('Neues Ziel', 'New goal')} onClose={onClose}>
+    <Sheet title={goal ? tr('Ziel bearbeiten', 'Edit goal') : tr('Neues Ziel', 'New goal')} onClose={onClose} onOutside={outside}
+      action={{ label: goal ? tr('Änderungen speichern', 'Save changes') : tr('Erstellen', 'Create'), short: goal ? tr('Speichern', 'Save') : undefined, onClick: () => submit(), disabled: !valid }}>
       <form onSubmit={submit} className="form">
         <label className="field">
           <span>{tr('Name', 'Name')}</span>

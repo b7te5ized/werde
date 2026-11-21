@@ -10,10 +10,12 @@ export function ThemeEditor({ theme, onClose }: { theme: Theme; onClose: () => v
   const [name, setName] = useState(theme.name);
   const [color, setColor] = useState(theme.color);
   const [icon, setIcon] = useState(theme.icon);
+  const save = () => { if (!name.trim()) return false; saveTheme({ ...theme, name: name.trim(), color, icon }); return true; };
   const count = data.goals.filter((g) => g.themeId === theme.id).length;
   return (
-    <Sheet title={tr('Thema bearbeiten', 'Edit theme')} onClose={onClose}>
-      <form className="form" onSubmit={(e) => { e.preventDefault(); if (name.trim()) { saveTheme({ ...theme, name: name.trim(), color, icon }); onClose(); } }}>
+    <Sheet title={tr('Thema bearbeiten', 'Edit theme')} onClose={onClose} onOutside={() => { save(); onClose(); }}
+      action={{ label: tr('Änderungen speichern', 'Save changes'), short: tr('Speichern', 'Save'), onClick: () => { save(); onClose(); }, disabled: !name.trim() }}>
+      <form className="form" onSubmit={(e) => { e.preventDefault(); if (save()) onClose(); }}>
         <label className="field"><span>{tr('Name', 'Name')}</span><input value={name} onChange={(e) => setName(e.target.value)} maxLength={40} /></label>
         <div className="field"><span className="legend">{tr('Farbe', 'Colour')}</span><ColorPicker value={color} onChange={setColor} /></div>
         <div className="field"><span className="legend">{tr('Symbol', 'Icon')}</span><IconPicker value={icon} onChange={setIcon} /></div>

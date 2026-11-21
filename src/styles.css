@@ -667,3 +667,9 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .quick-entry-btn { margin-top: 22px; align-self: flex-start; }
 /* whole words only: no hyphenation anywhere */
 html, body, * { hyphens: manual; -webkit-hyphens: manual; }
+.sheet-action { flex: none; padding: 10px 16px; font-size: 15px; border-radius: 14px; white-space: nowrap; }
+.sheet-head { gap: 12px; }
+.sheet-head .sheet-action { width: auto; margin: 0; }
+.sheet-head h2 { flex: 1 1 auto; min-width: 7em; }
+.sheet-action .act-short { display: none; }
+@media (max-width: 420px) { .sheet-action .act-long { display: none; } .sheet-action .act-short { display: inline; } }

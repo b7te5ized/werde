@@ -58,7 +58,7 @@ export default function App() {
       <Welcome />
 
       {sheet?.kind === 'new-goal' && <GoalEditor defaultThemeId={sheet.themeId} onClose={close} />}
-      {sheet?.kind === 'edit-goal' && findGoal(sheet.id) && <GoalEditor goal={findGoal(sheet.id)} onClose={close} />}
+      {sheet?.kind === 'edit-goal' && findGoal(sheet.id) && <GoalEditor goal={findGoal(sheet.id)} onClose={() => setSheet({ kind: 'goal', id: sheet.id })} />}
       {sheet?.kind === 'goal' && findGoal(sheet.id) && (
         <GoalDetail goal={findGoal(sheet.id)!} onClose={close} onEdit={() => setSheet({ kind: 'edit-goal', id: sheet.id })} />
       )}
