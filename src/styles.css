@@ -599,3 +599,13 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .setting-row > span:first-child, .setting-row label { min-width: 0; overflow-wrap: anywhere; }
 .setting-row .row .unit-hint { flex: none; }
 .setting-row input[type=time] { flex: 1 1 7.2em; padding: 12px 6px; }
+
+/* Daily note per goal */
+.day-note { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; font-weight: 800; }
+.day-note textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 84px; font: inherit; font-weight: 400;
+  font-family: 'Fraunces', Georgia, serif; font-variation-settings: 'SOFT' 100, 'WONK' 1; font-size: 17px; line-height: 1.4; overflow-wrap: anywhere; }
+.day-notes { list-style: none; margin: 0; padding: 0 16px 12px; }
+.day-notes li { padding: 10px 0; border-bottom: 1px solid var(--line, rgba(0,0,0,.08)); }
+.day-notes li:last-child { border-bottom: 0; }
+.day-notes p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: 'Fraunces', Georgia, serif; font-variation-settings: 'SOFT' 100, 'WONK' 1; }
+.day-note-add { width: 100%; margin-top: 18px; }

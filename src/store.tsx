@@ -100,6 +100,7 @@ interface Store {
   replaceAll: (d: Data) => void;
   addNote: (text: string) => void;
   removeNote: (id: string) => void;
+  setDayNote: (goalId: string, day: string, text: string) => void;
 }
 
 const Ctx = createContext<Store | null>(null);
@@ -282,6 +283,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     },
     saveSettings: (s) => setData((d) => ({ ...d, settings: { ...d.settings, ...s } })),
     addNote: (text) => setData((d) => ({ ...d, notes: [{ id: uid(), text, at: Date.now() }, ...d.notes] })),
+    setDayNote: (goalId, day, text) => setData((d) => {
+      const all = { ...(d.dayNotes ?? {}) };
+      const mine = { ...(all[goalId] ?? {}) };
+      if (text.trim()) mine[day] = text; else delete mine[day];
+      if (Object.keys(mine).length) all[goalId] = mine; else delete all[goalId];
+      return { ...d, dayNotes: all };
+    }),
     removeNote: (id) => change((d) => ({ ...d, notes: d.notes.filter((n) => n.id !== id) }), 'Notiz entfernt'),
     replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now(), welcomed: true }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, notes: nd.notes ?? [], celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
   };

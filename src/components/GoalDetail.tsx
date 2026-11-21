@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Goal } from '../types';
 import { PALETTE } from '../palette';
-import { fmt, goalProgress, logsInPeriod, PERIOD_LABEL, progressLabel } from '../progress';
+import { dayKey, fmt, goalProgress, logsInPeriod, PERIOD_LABEL, progressLabel } from '../progress';
 import { useStore } from '../store';
 import { Sheet } from './Sheet';
 import { Fill } from './Fill';
@@ -9,15 +9,19 @@ import { categoryOf, cueText } from '../categories';
 import { rhythm, UNIT_WORD } from '../consistency';
 
 export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () => void; onEdit: () => void }) {
-  const { data, log, deleteLog, saveGoal, deleteGoal } = useStore();
+  const { data, log, deleteLog, saveGoal, deleteGoal, setDayNote } = useStore();
   const theme = data.themes.find((t) => t.id === goal.themeId);
   const sw = PALETTE[theme?.color ?? 'meadow'];
   const p = goalProgress(goal, data.logs);
   const entries = logsInPeriod(goal, data.logs);
   const [amount, setAmount] = useState('');
+  const [noteOpen, setNoteOpen] = useState(false);
   const n = Number(amount.replace(',', '.'));
   const r = rhythm(goal, data);
   const [, many] = UNIT_WORD[goal.period];
+  const today = dayKey(new Date());
+  const notes = data.dayNotes?.[goal.id] ?? {};
+  const earlier = Object.entries(notes).filter(([k]) => k !== today).sort(([a], [b]) => (a < b ? 1 : -1));
 
   return (
     <Sheet title={goal.name} onClose={onClose}>
@@ -44,6 +48,37 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
           <span className="unit-hint">{goal.unit}</span>
           <button className="primary small" type="submit" disabled={!n}>Hinzufügen</button>
         </form>
+      )}
+
+      {noteOpen || notes[today] ? (
+        <label className="day-note">
+          <span>Tagesnotiz</span>
+          <textarea rows={3} value={notes[today] ?? ''} placeholder="Ein paar Worte, nur für dich …" autoFocus={noteOpen && !notes[today]}
+            onChange={(e) => setDayNote(goal.id, today, e.target.value)} />
+        </label>
+      ) : (
+        <button type="button" className="secondary day-note-add" onClick={() => setNoteOpen(true)}>+ Tagesnotiz hinzufügen</button>
+      )}
+
+      {earlier.length > 0 && (
+        <details className="entries-box">
+          <summary>
+            <span>Frühere Notizen</span>
+            <span className="muted entries-count">{earlier.length}</span>
+            <svg className="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </summary>
+          <ul className="day-notes">
+            {earlier.map(([k, text]) => {
+              const [y, m, d] = k.split('-').map(Number);
+              return (
+                <li key={k}>
+                  <span className="muted small">{new Date(y, m - 1, d).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'long' })}</span>
+                  <p>{text}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </details>
       )}
 
       <details className="entries-box">

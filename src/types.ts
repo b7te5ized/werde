@@ -81,6 +81,8 @@ export interface Data {
   freezes: Record<string, string[]>;
   /** ideas and future habits that do not fit yet */
   notes: Note[];
+  /** short daily notes per goal: goalId -> dayKey -> text (optional so older data and backups stay valid) */
+  dayNotes?: Record<string, Record<string, string>>;
 }
 
 export interface Note { id: string; text: string; at: number }
