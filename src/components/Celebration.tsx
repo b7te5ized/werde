@@ -49,7 +49,7 @@ export function Celebration() {
   }
 
   return (
-    <div className={`celebrate${reduced ? ' still' : ''}`} role="alertdialog" aria-label={`${goal.title} in voller Blüte`} onClick={clearCelebration}>
+    <div className={`celebrate${reduced ? ' still' : ''}`} role="alertdialog" aria-label={`${goal.title} geschafft`} onClick={clearCelebration}>
       <div className="celebrate-stage" aria-hidden="true">
         {!reduced && petals.map((p, i) => (
           <span key={i} className={`confetti c${p.shape}`} style={{
@@ -80,7 +80,7 @@ export function Celebration() {
         </svg>
       </div>
       <div className="celebrate-text">
-        <p className="celebrate-eyebrow">In voller Blüte</p>
+        <p className="celebrate-eyebrow">Geschafft</p>
         <h2>{goal.title}</h2>
         {goal.note && <p className="celebrate-note">{goal.note}</p>}
       </div>

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { Category, Direction, Goal, PaletteKey, Period, Theme } from '../types';
-import { ICONS, PALETTE, PALETTE_KEYS, UNITS } from '../palette';
+import { PALETTE, PALETTE_KEYS, UNITS } from '../palette';
 import { uid, useStore } from '../store';
 import { Segmented, Sheet } from './Sheet';
 import { Fill } from './Fill';
@@ -51,10 +51,10 @@ export function GoalEditor({ goal, defaultThemeId, onClose }: { goal?: Goal; def
   };
 
   return (
-    <Sheet title={goal ? 'Ziel pflegen' : 'Ziel pflanzen'} onClose={onClose}>
+    <Sheet title={goal ? 'Ziel bearbeiten' : 'Neues Ziel'} onClose={onClose}>
       <form onSubmit={submit} className="form">
         <label className="field">
-          <span>Was möchtest du wachsen lassen?</span>
+          <span>Name</span>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Deine Worte, dein Ziel" maxLength={60} />
         </label>
 
@@ -131,7 +131,7 @@ export function GoalEditor({ goal, defaultThemeId, onClose }: { goal?: Goal; def
           <div className="cat-grid">
             {CATEGORIES.map((c) => (
               <button type="button" key={c.value} className={`cat-tile${category === c.value ? ' on' : ''}`}
-                aria-pressed={category === c.value} onClick={() => setCategory(c.value)} aria-label={`${c.label}, ${c.hint}`}>
+                aria-pressed={category === c.value} onClick={() => setCategory(c.value)} aria-label={c.label}>
                 <Fill pct={0.55} color={previewColor.base} category={c.value} />
                 {c.label}
               </button>
@@ -139,7 +139,7 @@ export function GoalEditor({ goal, defaultThemeId, onClose }: { goal?: Goal; def
           </div>
         </fieldset>
 
-        <button className="primary" type="submit" disabled={!valid}>{goal ? 'Speichern' : 'Pflanzen'}</button>
+        <button className="primary" type="submit" disabled={!valid}>{goal ? 'Speichern' : 'Erstellen'}</button>
       </form>
     </Sheet>
   );
@@ -156,14 +156,24 @@ export function ColorPicker({ value, onChange }: { value: PaletteKey; onChange: 
   );
 }
 
+/** Pick any emoji: tap the field and choose from the phone's own emoji keyboard. */
 export function IconPicker({ value, onChange }: { value: string; onChange: (i: string) => void }) {
+  const ref = useRef<HTMLInputElement>(null);
   return (
-    <div className="icons" role="radiogroup" aria-label="Symbol">
-      {ICONS.map((i) => (
-        <button type="button" key={i} role="radio" aria-checked={value === i} className={`icon-pick${value === i ? ' on' : ''}`} onClick={() => onChange(i)}>
-          {i}
-        </button>
-      ))}
+    <div className="emoji-pick">
+      <button type="button" className="emoji-current" onClick={() => ref.current?.focus()} aria-label={`Symbol ${value}, ändern`}>{value}</button>
+      <label className="emoji-field">
+        <input ref={ref} type="text" value="" placeholder="Emoji wählen" aria-label="Emoji eingeben" enterKeyHint="done"
+          onChange={(e) => { const g = lastEmoji(e.target.value); if (g) { onChange(g); e.target.blur(); } }} />
+        <span className="muted small">Tippen, dann auf der Tastatur 😀 oder 🌐 und ein Emoji wählen.</span>
+      </label>
     </div>
   );
+}
+
+function lastEmoji(text: string): string | null {
+  const Seg = (Intl as unknown as { Segmenter?: new (l?: string, o?: { granularity: string }) => { segment(t: string): Iterable<{ segment: string }> } }).Segmenter;
+  const parts = Seg ? Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(text), (x) => x.segment) : Array.from(text);
+  for (let i = parts.length - 1; i >= 0; i--) if (/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(parts[i])) return parts[i];
+  return null;
 }

@@ -88,7 +88,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
           <svg className="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </summary>
         {entries.length === 0 ? (
-          <p className="muted entries-empty">Noch nichts, und das ist in Ordnung.</p>
+          <p className="muted entries-empty">Noch keine Einträge.</p>
         ) : (
           <ul className="entries">
             {entries.map((l) => (

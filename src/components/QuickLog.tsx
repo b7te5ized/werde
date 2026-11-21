@@ -18,7 +18,7 @@ export function QuickLog({ onClose }: { onClose: () => void }) {
         <button className="secondary" onClick={onClose}>Fertig</button>
       </header>
       {goals.length === 0 ? (
-        <p className="card muted">Pflanze zuerst ein Ziel, dann erscheint es hier.</p>
+        <p className="card muted">Erstelle zuerst ein Ziel, dann erscheint es hier.</p>
       ) : (
         <div className="quick-grid">
           {goals.map((g) => {

@@ -65,6 +65,11 @@ export interface Settings {
   lastBackupAt: number;
   /** backup reminder postponed until */
   backupSnoozeUntil: number;
+  /** colour worlds and fonts (optional; the original look when missing) */
+  lightWorld?: string;
+  darkWorld?: string;
+  fontHead?: string;
+  fontBody?: string;
 }
 
 export interface Data {

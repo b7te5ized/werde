@@ -12,6 +12,7 @@ import { GoalDetail } from './components/GoalDetail';
 import { ThemeEditor } from './components/ThemeEditor';
 import { QuickLog } from './components/QuickLog';
 import { isStandalone } from './pwa';
+import { useLook } from './look';
 import { useSky } from './sky';
 import { Celebration } from './components/Celebration';
 import { Breathe } from './components/Breathe';
@@ -31,6 +32,7 @@ export default function App() {
   const [sheet, setSheet] = useState<Sheet>(null);
   useReminders();
   const sky = useSky(data.settings.skyMode);
+  useLook(sky.phase, data.settings);
   useEffect(() => { window.scrollTo(0, 0); }, [tab, quick]);
   const close = () => setSheet(null);
   const findGoal = (id: string) => data.goals.find((g) => g.id === id);

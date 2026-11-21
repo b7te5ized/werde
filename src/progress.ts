@@ -48,10 +48,10 @@ export function progressLabel(goal: Goal, p: Progress): string {
 
 export function gentleStatus(goal: Goal, p: Progress): string {
   if (goal.paused) return 'Ruht';
-  if (goal.direction === 'less') return p.reached ? 'Innerhalb deiner Grenze' : 'Über deiner Grenze, und das ist okay';
-  if (p.reached) return 'In voller Blüte';
-  if (p.amount === 0) return 'Wartet auf dich';
-  return 'Wächst';
+  if (goal.direction === 'less') return p.reached ? 'Innerhalb deiner Grenze' : 'Über der Grenze';
+  if (p.reached) return 'Erreicht';
+  if (p.amount === 0) return 'Noch offen';
+  return 'Unterwegs';
 }
 
 export function greeting(now = new Date()): string {

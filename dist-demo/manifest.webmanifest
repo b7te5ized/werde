@@ -1,7 +1,7 @@
 {
   "name": "werde",
   "short_name": "werde",
-  "description": "Wachsen in deinem Tempo, auf deine Weise.",
+  "description": "Gewohnheiten und Ziele.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

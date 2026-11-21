@@ -21,7 +21,7 @@ export function Overview() {
 
   return (
     <main className="view">
-      <header className="greet top"><h1>Fortschritt</h1><p>Wie deine Tage gewachsen sind.</p></header>
+      <header className="greet top"><h1>Fortschritt</h1></header>
 
       {themes.length > 1 && (
         <div className="chips filter" role="group" aria-label="Nach Thema filtern">
@@ -122,8 +122,8 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
         </div>
         <p className="month-summary">
           {activeDays === 0
-            ? 'Ein ruhiger Monat bisher. Ruhe gehört zum Wachsen dazu.'
-            : <>Du warst an <b>{activeDays}</b> {activeDays === 1 ? 'Tag' : 'Tagen'} dabei{blooms > 0 && <>, und deine Tagesziele sind <b>{blooms}</b>-mal aufgeblüht</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> {periodGoalsReached === 1 ? 'Monatsziel' : 'Monatsziele'} erreicht</>}.</>}
+            ? 'Diesen Monat noch keine Einträge.'
+            : <>Du warst an <b>{activeDays}</b> {activeDays === 1 ? 'Tag' : 'Tagen'} dabei{blooms > 0 && <>, <b>{blooms}</b>-mal ein Tagesziel erreicht</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> {periodGoalsReached === 1 ? 'Monatsziel' : 'Monatsziele'} erreicht</>}.</>}
         </p>
       </section>
       {picked && <DayDetail day={picked} goals={goals} logs={mlogs} />}

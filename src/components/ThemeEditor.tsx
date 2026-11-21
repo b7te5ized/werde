@@ -11,7 +11,7 @@ export function ThemeEditor({ theme, onClose }: { theme: Theme; onClose: () => v
   const [icon, setIcon] = useState(theme.icon);
   const count = data.goals.filter((g) => g.themeId === theme.id).length;
   return (
-    <Sheet title="Thema pflegen" onClose={onClose}>
+    <Sheet title="Thema bearbeiten" onClose={onClose}>
       <form className="form" onSubmit={(e) => { e.preventDefault(); if (name.trim()) { saveTheme({ ...theme, name: name.trim(), color, icon }); onClose(); } }}>
         <label className="field"><span>Name</span><input value={name} onChange={(e) => setName(e.target.value)} maxLength={40} /></label>
         <div className="field"><span className="legend">Farbe</span><ColorPicker value={color} onChange={setColor} /></div>

@@ -65,21 +65,21 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
       {resting && (
         <section className="card rest-banner" role="status">
           <span aria-hidden="true" style={{ fontSize: 26 }}>🌙</span>
-          <p>Ruhetag. Nichts geht verloren.</p>
+          <p>Heute ist Ruhetag.</p>
           <button className="text-btn" onClick={() => toggleRestDay(new Date())}>Beenden</button>
         </section>
       )}
       {data.themes.length === 0 ? (
         <section className="empty card">
           <h2>Das ist deine Lichtung</h2>
-          <p>Hier ist nichts für dich vorgegeben. Pflanze ein erstes Ziel, mit deinen Worten und deinem Maß.</p>
-          <button className="primary" onClick={() => onNewGoal()}>Ziel pflanzen</button>
+          <p>Noch keine Ziele.</p>
+          <button className="primary" onClick={() => onNewGoal()}>+ Ziel setzen</button>
           {!inClaude && <RestoreButton className="text-btn" label="Ich habe eine Sicherung" />}
         </section>
       ) : (
         <>
           <ThemeList onOpenGoal={onOpenGoal} />
-          <button className="primary ghost" onClick={() => onNewGoal()}>Ziel pflanzen</button>
+          <button className="primary ghost" onClick={() => onNewGoal()}>+ Ziel setzen</button>
         </>
       )}
     </main>
