@@ -97,8 +97,8 @@ export function pickGreeting(now: Date, name: string, pronoun: Pronoun, custom?:
   const pool = lines.length > 1 ? lines.filter((l) => JSON.stringify(l.text) !== lastPick) : lines;
   const line = pool[Math.floor(Math.random() * pool.length)];
   lastPick = JSON.stringify(line.text);
-  // greetings carry no punctuation; only the quote below does
-  const text = renderText(line.text, name, pronoun).replace(/[.,;:!?]/g, '').replace(/\s+/g, ' ').trim();
+  // shown exactly as written, punctuation included
+  const text = renderText(line.text, name, pronoun).replace(/\s+/g, ' ').trim();
   return { text, icon: line.icon };
 }
 
