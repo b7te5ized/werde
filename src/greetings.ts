@@ -11,27 +11,27 @@ interface Line { text: Text; icon: GreetIconKind }
 
 export const GREETINGS: Record<'morning' | 'lunch' | 'afternoon' | 'evening' | 'night', Line[]> = {
   morning: [
-    { text: 'Good morning, Rockstar.', icon: 'star' },
-    { text: 'Rise and shine.', icon: 'sunrise' },
-    { text: 'Main character has awakened.', icon: 'sparkles' },
-    { text: 'Start your engines.', icon: 'shooting' },
+    { text: 'Good morning, Rockstar', icon: 'star' },
+    { text: 'Rise and shine', icon: 'sunrise' },
+    { text: 'Main character has awakened', icon: 'sparkles' },
+    { text: 'Start your engines', icon: 'shooting' },
   ],
   lunch: [
-    { text: "You're serving.", icon: 'sparkles' },
-    { text: 'Lunch first, world domination later.', icon: 'crown' },
-    { text: 'Lunch eleganza extravaganza.', icon: 'star' },
+    { text: "You're serving", icon: 'sparkles' },
+    { text: 'Lunch first, world domination later', icon: 'crown' },
+    { text: 'Lunch eleganza extravaganza', icon: 'star' },
   ],
   afternoon: [
-    { text: 'Werk it.', icon: 'sparkles' },
-    { text: 'Charisma, Uniqueness, Nerve & Talent. Alles da.', icon: 'crown' },
+    { text: 'Werk it', icon: 'sparkles' },
+    { text: 'Charisma, Uniqueness, Nerve & Talent – alles da', icon: 'crown' },
   ],
   evening: [
-    { text: 'Was für ein Tag, Legende.', icon: 'shooting' },
-    { text: 'You ate today.', icon: 'star' },
+    { text: 'Was für ein Tag, Legende', icon: 'shooting' },
+    { text: 'You ate today', icon: 'star' },
   ],
   night: [
-    { text: 'Gute Nacht.', icon: 'moon' },
-    { text: 'Sashay away to bed.', icon: 'shooting' },
+    { text: 'Gute Nacht', icon: 'moon' },
+    { text: 'Sashay away to bed', icon: 'shooting' },
   ],
 };
 
@@ -67,9 +67,9 @@ export const SLOT_LABEL = {
 
 /** English versions of the built-in German lines. */
 const EN_ALT: Record<string, string> = {
-  'Charisma, Uniqueness, Nerve & Talent. Alles da.': 'Charisma, Uniqueness, Nerve & Talent. All there.',
-  'Was für ein Tag, Legende.': 'What a day, legend.',
-  'Gute Nacht.': 'Good night.',
+  'Charisma, Uniqueness, Nerve & Talent – alles da': 'Charisma, Uniqueness, Nerve & Talent – all there',
+  'Was für ein Tag, Legende': 'What a day, legend',
+  'Gute Nacht': 'Good night',
   'Wünsche, statt Erwartungen, {name}.': 'Wishes, not expectations, {name}.',
 };
 const loc = (t: string) => (getLang() === 'en' ? EN_ALT[t] ?? t : t);
