@@ -6,6 +6,7 @@ import { rhythm, UNIT_WORD } from '../consistency';
 import { categoryOf } from '../categories';
 import { Fill } from './Fill';
 import { cueText } from '../categories';
+import { tr } from '../i18n';
 
 export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; onOpen: () => void }) {
   const { data, log } = useStore();
@@ -22,19 +23,19 @@ export function GoalCard({ goal, theme, onOpen }: { goal: Goal; theme: Theme; on
         <Fill pct={todayFill(goal, data.logs)} color={sw.base} category={categoryOf(goal)} />
         <div className="goal-main">
           <button className="goal-open"
-            aria-label={`${goal.name}, ${label} ${PERIOD_LABEL[goal.period]}${r.streak >= 2 ? `, ${r.streak} ${UNIT_WORD[goal.period][1]} dabei` : ''}. Details öffnen`}>
+            aria-label={`${goal.name}, ${label} ${PERIOD_LABEL[goal.period]}${r.streak >= 2 ? `, ${r.streak} ${UNIT_WORD[goal.period][1]}` : ''}. ${tr('Details öffnen', 'Open details')}`}>
             <span className="goal-name">{goal.name}</span>
           </button>
           <span className="goal-meta">
             <span className="goal-amount">
               {fmt(p.amount)} / {fmt(goal.target)} {goal.unit}
-              {goal.period !== 'day' && ` · ${PERIOD_LABEL[goal.period]}`}
+              {goal.period !== 'day' && ` / ${UNIT_WORD[goal.period][0]}`}
               {!goal.paused && goal.direction === 'more' && r.streak >= 2 && <span className="streak"> · {r.streak} {UNIT_WORD[goal.period][1]}</span>}
             </span>
             {!goal.paused && (
               <button className="add-btn no-drag" onClick={() => log(goal.id, goal.step)}
-                aria-label={`${fmt(goal.step)} ${goal.unit} zu ${goal.name} hinzufügen`}>
-                + {fmt(goal.step)} {goal.unit}
+                aria-label={tr(`${fmt(goal.step)} ${goal.unit} zu ${goal.name} hinzufügen`, `Add ${fmt(goal.step)} ${goal.unit} to ${goal.name}`)}>
+                + {fmt(goal.step)}<span className="add-unit"> {goal.unit}</span>
               </button>
             )}
           </span>

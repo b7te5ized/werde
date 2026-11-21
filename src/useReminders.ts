@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useStore } from './store';
-import { NUDGES, shouldNudge, showNudge } from './reminders';
+import { nudges, shouldNudge, showNudge } from './reminders';
 
 /** Checks the 5-hour rule every minute while werde is open or in the background. */
 export function useReminders() {
@@ -14,7 +14,7 @@ export function useReminders() {
     const tick = async () => {
       const now = new Date();
       if (!shouldNudge(now, lastActivity, settings, restDays)) return;
-      const ok = await showNudge(NUDGES[now.getDate() % NUDGES.length]);
+      const ok = await showNudge(nudges()[now.getDate() % nudges().length]);
       if (ok) saveSettings({ lastNudgeAt: now.getTime() });
     };
     tick();

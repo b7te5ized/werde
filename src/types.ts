@@ -70,6 +70,8 @@ export interface Settings {
   darkWorld?: string;
   fontHead?: string;
   fontBody?: string;
+  /** interface language; missing = follow the device (German unless the device is not German) */
+  lang?: 'de' | 'en';
 }
 
 export interface Data {

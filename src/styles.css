@@ -643,3 +643,15 @@ h1, h2, .theme-name, .detail-big, .celebrate-text h2, .breathe-word, .sheet-head
 .world-swatch i:last-child { width: 16px; height: 16px; right: 6px; top: 6px; }
 .world.on .world-swatch { box-shadow: 0 0 0 3px var(--accent); }
 .font-row .chip { font-size: 16px; }
+
+/* + button always in the same row, right after the amount; never wraps, so the card never jumps while logging */
+.goal-main { container-type: inline-size; }
+.goal-meta { flex-direction: row; align-items: center; flex-wrap: nowrap; column-gap: 10px; max-width: 100%; }
+.goal-meta .goal-amount { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; overflow-wrap: normal; }
+.goal-meta .add-btn { flex: none; }
+@container (max-width: 205px) { .add-btn .add-unit { display: none; } }
+.goal-amount { font-variant-numeric: tabular-nums; }
+/* undo note at the top, so it never covers the cards you are tapping */
+.toast { top: calc(12px + env(safe-area-inset-top)); bottom: auto; }
+@container (max-width: 280px) { .goal-amount .streak { display: none; } }
+@media (max-width: 340px) { .goal-pct { font-size: 22px; min-width: 2.8em; } .goal-card { gap: 10px; padding-right: 12px; } }

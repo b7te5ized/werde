@@ -17,6 +17,7 @@ import { useSky } from './sky';
 import { Celebration } from './components/Celebration';
 import { Breathe } from './components/Breathe';
 import { Welcome } from './components/Welcome';
+import { pickLang, setLang } from './i18n';
 
 type Sheet =
   | { kind: 'new-goal'; themeId?: string }
@@ -27,6 +28,7 @@ type Sheet =
 
 export default function App() {
   const { data } = useStore();
+  setLang(pickLang(data.settings.lang));
   const [tab, setTab] = useState<Tab>('today');
   const [quick, setQuick] = useState(() => location.hash === '#quick' || (isStandalone() && data.settings.openInQuickLog));
   const [sheet, setSheet] = useState<Sheet>(null);

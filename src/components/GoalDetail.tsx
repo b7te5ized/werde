@@ -7,6 +7,7 @@ import { Sheet } from './Sheet';
 import { Fill } from './Fill';
 import { categoryOf, cueText } from '../categories';
 import { rhythm, UNIT_WORD } from '../consistency';
+import { tr, locale } from '../i18n';
 
 export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () => void; onEdit: () => void }) {
   const { data, log, deleteLog, saveGoal, deleteGoal, setDayNote } = useStore();
@@ -27,7 +28,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
     <Sheet title={goal.name} onClose={onClose}>
       {goal.why && (
         <blockquote className="why-first">
-          <span className="why-label">Warum?</span>
+          <span className="why-label">{tr('Warum?', 'Why?')}</span>
           {goal.why}
         </blockquote>
       )}
@@ -36,7 +37,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
         <div>
           <p className="detail-big">{Math.round(p.pct * 100)}%</p>
           <p>{progressLabel(goal, p)} {PERIOD_LABEL[goal.period]}</p>
-          {r.streak >= 2 && !goal.paused && <p className="muted">🌱 {r.streak} {many} dabei</p>}
+          {r.streak >= 2 && !goal.paused && <p className="muted">🌱 {r.streak} {many} </p>}
         </div>
       </div>
       {goal.cue && <p className="muted detail-cue">{cueText(goal.cue)}</p>}
@@ -44,26 +45,26 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
       {!goal.paused && (
         <form className="row log-custom" onSubmit={(e) => { e.preventDefault(); if (n) { log(goal.id, n); setAmount(''); } }}>
           <input className="num" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)}
-            placeholder={fmt(goal.step)} aria-label={`Menge in ${goal.unit}`} />
+            placeholder={fmt(goal.step)} aria-label={tr(`Menge in ${goal.unit}`, `Amount in ${goal.unit}`)} />
           <span className="unit-hint">{goal.unit}</span>
-          <button className="primary small" type="submit" disabled={!n}>Hinzufügen</button>
+          <button className="primary small" type="submit" disabled={!n}>{tr('Hinzufügen', 'Add')}</button>
         </form>
       )}
 
       {noteOpen || notes[today] ? (
         <label className="day-note">
-          <span>Tagesnotiz</span>
-          <textarea rows={3} value={notes[today] ?? ''} placeholder="Ein paar Worte, nur für dich …" autoFocus={noteOpen && !notes[today]}
+          <span>{tr('Tagesnotiz', 'Daily note')}</span>
+          <textarea rows={3} value={notes[today] ?? ''} placeholder={tr('Ein paar Worte, nur für dich …', 'A few words, just for you …')} autoFocus={noteOpen && !notes[today]}
             onChange={(e) => setDayNote(goal.id, today, e.target.value)} />
         </label>
       ) : (
-        <button type="button" className="secondary day-note-add" onClick={() => setNoteOpen(true)}>+ Tagesnotiz hinzufügen</button>
+        <button type="button" className="secondary day-note-add" onClick={() => setNoteOpen(true)}>{tr('+ Tagesnotiz hinzufügen', '+ Add daily note')}</button>
       )}
 
       {earlier.length > 0 && (
         <details className="entries-box">
           <summary>
-            <span>Frühere Notizen</span>
+            <span>{tr('Frühere Notizen', 'Earlier notes')}</span>
             <span className="muted entries-count">{earlier.length}</span>
             <svg className="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </summary>
@@ -72,7 +73,7 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
               const [y, m, d] = k.split('-').map(Number);
               return (
                 <li key={k}>
-                  <span className="muted small">{new Date(y, m - 1, d).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'long' })}</span>
+                  <span className="muted small">{new Date(y, m - 1, d).toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'long' })}</span>
                   <p>{text}</p>
                 </li>
               );
@@ -83,19 +84,19 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
 
       <details className="entries-box">
         <summary>
-          <span>Einträge</span>
+          <span>{tr('Einträge', 'Entries')}</span>
           <span className="muted entries-count">{entries.length > 0 ? `${entries.length} ${PERIOD_LABEL[goal.period]}` : PERIOD_LABEL[goal.period]}</span>
           <svg className="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </summary>
         {entries.length === 0 ? (
-          <p className="muted entries-empty">Noch keine Einträge.</p>
+          <p className="muted entries-empty">{tr('Noch keine Einträge.', 'No entries yet.')}</p>
         ) : (
           <ul className="entries">
             {entries.map((l) => (
               <li key={l.id}>
                 <span>{fmt(l.amount)} {goal.unit}</span>
-                <span className="muted">{new Date(l.at).toLocaleString('de-DE', { weekday: goal.period === 'day' ? undefined : 'short', hour: '2-digit', minute: '2-digit' })}</span>
-                <button className="text-btn" onClick={() => deleteLog(l.id)} aria-label={`Eintrag ${fmt(l.amount)} ${goal.unit} entfernen`}>Entfernen</button>
+                <span className="muted">{new Date(l.at).toLocaleString(locale(), { weekday: goal.period === 'day' ? undefined : 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <button className="text-btn" onClick={() => deleteLog(l.id)} aria-label={tr(`Eintrag ${fmt(l.amount)} ${goal.unit} entfernen`, `Remove entry ${fmt(l.amount)} ${goal.unit}`)}>{tr('Entfernen', 'Remove')}</button>
               </li>
             ))}
           </ul>
@@ -103,11 +104,11 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
       </details>
 
       <div className="detail-actions">
-        <button className="primary edit-btn" onClick={onEdit}>Bearbeiten</button>
+        <button className="primary edit-btn" onClick={onEdit}>{tr('Bearbeiten', 'Edit')}</button>
         <button className="secondary" onClick={() => saveGoal({ ...goal, paused: !goal.paused })}>
-          {goal.paused ? 'Wieder aufnehmen' : 'Pausieren'}
+          {goal.paused ? tr('Wieder aufnehmen', 'Resume') : tr('Pausieren', 'Pause')}
         </button>
-        <button className="danger-btn" onClick={() => { deleteGoal(goal.id); onClose(); }}>Löschen</button>
+        <button className="danger-btn" onClick={() => { deleteGoal(goal.id); onClose(); }}>{tr('Löschen', 'Delete')}</button>
       </div>
     </Sheet>
   );

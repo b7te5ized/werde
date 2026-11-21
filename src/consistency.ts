@@ -1,5 +1,6 @@
 import type { Data, Goal, Log } from './types';
 import { addDays, dayKey, periodStart } from './progress';
+import { tr } from './i18n';
 
 /** Start and end of the period that lies `k` periods before the current one. */
 export function unitRange(goal: Goal, k: number, now = new Date()): [Date, Date] {
@@ -59,7 +60,11 @@ export function rhythm(goal: Goal, data: Pick<Data, 'logs' | 'restDays' | 'freez
   return { streak, missedLast, doneNow };
 }
 
-export const UNIT_WORD: Record<Goal['period'], [string, string]> = { day: ['Tag', 'Tage'], week: ['Woche', 'Wochen'], month: ['Monat', 'Monate'] };
+export const UNIT_WORD = {
+  get day() { return [tr('Tag', 'day'), tr('Tage', 'days')]; },
+  get week() { return [tr('Woche', 'week'), tr('Wochen', 'weeks')]; },
+  get month() { return [tr('Monat', 'month'), tr('Monate', 'months')]; },
+} as Record<Goal['period'], [string, string]>;
 
 export const MILESTONES = [3, 7, 14, 21, 30, 50, 75, 100, 150, 200, 365];
 

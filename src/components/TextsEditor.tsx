@@ -1,6 +1,7 @@
 import { defaultTexts, SLOT_LABEL, SLOTS, type CustomTexts, type Slot } from '../greetings';
 import { useStore } from '../store';
 import { Sheet } from './Sheet';
+import { tr } from '../i18n';
 
 /** Write and edit your own greetings (per time of day) and the quotes below them. */
 export function TextsEditor({ onClose }: { onClose: () => void }) {
@@ -10,16 +11,16 @@ export function TextsEditor({ onClose }: { onClose: () => void }) {
   const setGreeting = (slot: Slot, list: string[]) => save({ ...t, greetings: { ...t.greetings, [slot]: list } });
 
   return (
-    <Sheet title="Begrüssungen & Sprüche" onClose={onClose}>
-      <p className="muted small">Pro Tageszeit erscheint zufällig eine Begrüssung, darunter ein Spruch. Im Spruch wird {'{name}'} durch deinen Namen ersetzt.</p>
+    <Sheet title={tr('Begrüssungen & Sprüche', 'Greetings & quotes')} onClose={onClose}>
+      <p className="muted small">{tr('Pro Tageszeit erscheint zufällig eine Begrüssung, darunter ein Spruch. Im Spruch wird {name} durch deinen Namen ersetzt.', 'For each time of day a random greeting appears, with a quote below. In a quote, {name} is replaced by your name.')}</p>
       {SLOTS.map((slot) => (
-        <TextList key={slot} title={SLOT_LABEL[slot]} items={t.greetings[slot] ?? []} placeholder="Neue Begrüssung" multiline
+        <TextList key={slot} title={SLOT_LABEL[slot]} items={t.greetings[slot] ?? []} placeholder={tr('Neue Begrüssung', 'New greeting')} multiline
           onChange={(list) => setGreeting(slot, list)} />
       ))}
-      <TextList title="Sprüche" items={t.quotes} placeholder="Neuer Spruch, z. B. Du machst das gut, {name}." multiline
+      <TextList title={tr('Sprüche', 'Quotes')} items={t.quotes} placeholder={tr('Neuer Spruch, z. B. Du machst das gut, {name}.', 'New quote, e.g. You are doing great, {name}.')} multiline
         onChange={(quotes) => save({ ...t, quotes })} />
       {data.texts && (
-        <button type="button" className="text-btn texts-reset" onClick={() => setTexts(undefined)}>Auf die ursprünglichen Texte zurücksetzen</button>
+        <button type="button" className="text-btn texts-reset" onClick={() => setTexts(undefined)}>{tr('Auf die ursprünglichen Texte zurücksetzen', 'Reset to the original texts')}</button>
       )}
     </Sheet>
   );
@@ -38,12 +39,12 @@ function TextList({ title, items, onChange, placeholder, multiline }: {
             {multiline
               ? <textarea rows={2} value={text} placeholder={placeholder} aria-label={`${title} ${i + 1}`} autoFocus={i === items.length - 1 && text === ''} onChange={(e) => set(i, e.target.value)} />
               : <input type="text" value={text} placeholder={placeholder} aria-label={`${title} ${i + 1}`} autoFocus={i === items.length - 1 && text === ''} onChange={(e) => set(i, e.target.value)} />}
-            <button type="button" className="chip-x" aria-label="Entfernen" disabled={items.length <= 1}
+            <button type="button" className="chip-x" aria-label={tr('Entfernen', 'Remove')} disabled={items.length <= 1}
               onClick={() => onChange(items.filter((_, j) => j !== i))}>×</button>
           </li>
         ))}
       </ul>
-      <button type="button" className="secondary small-btn" onClick={() => onChange([...items, ''])}>+ Neu</button>
+      <button type="button" className="secondary small-btn" onClick={() => onChange([...items, ''])}>{tr('+ Neu', '+ New')}</button>
     </section>
   );
 }

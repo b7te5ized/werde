@@ -1,4 +1,5 @@
 import type { Goal, Log, Period } from './types';
+import { getLang, tr } from './i18n';
 
 export function periodStart(period: Period, now = new Date()): Date {
   const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -35,23 +36,23 @@ export function goalProgress(goal: Goal, logs: Log[], now = new Date()): Progres
 }
 
 export function fmt(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, '').replace(/\.$/, '').replace('.', ',');
+  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, '').replace(/\.$/, '').replace('.', getLang() === 'en' ? '.' : ',');
 }
 
-export const PERIOD_LABEL: Record<Period, string> = { day: 'heute', week: 'diese Woche', month: 'diesen Monat' };
-export const PERIOD_ADJ: Record<Period, string> = { day: 'pro Tag', week: 'pro Woche', month: 'pro Monat' };
+export const PERIOD_LABEL = { get day() { return tr('heute', 'today'); }, get week() { return tr('diese Woche', 'this week'); }, get month() { return tr('diesen Monat', 'this month'); } } as Record<Period, string>;
+export const PERIOD_ADJ = { get day() { return tr('pro Tag', 'per day'); }, get week() { return tr('pro Woche', 'per week'); }, get month() { return tr('pro Monat', 'per month'); } } as Record<Period, string>;
 
 export function progressLabel(goal: Goal, p: Progress): string {
-  if (goal.direction === 'less') return `${fmt(p.amount)} von max. ${fmt(goal.target)} ${goal.unit}`;
-  return `${fmt(p.amount)} von ${fmt(goal.target)} ${goal.unit}`;
+  if (goal.direction === 'less') return tr(`${fmt(p.amount)} von max. ${fmt(goal.target)} ${goal.unit}`, `${fmt(p.amount)} of max. ${fmt(goal.target)} ${goal.unit}`);
+  return tr(`${fmt(p.amount)} von ${fmt(goal.target)} ${goal.unit}`, `${fmt(p.amount)} of ${fmt(goal.target)} ${goal.unit}`);
 }
 
 export function gentleStatus(goal: Goal, p: Progress): string {
-  if (goal.paused) return 'Ruht';
-  if (goal.direction === 'less') return p.reached ? 'Innerhalb deiner Grenze' : 'Über der Grenze';
-  if (p.reached) return 'Erreicht';
-  if (p.amount === 0) return 'Noch offen';
-  return 'Unterwegs';
+  if (goal.paused) return tr('Ruht', 'Paused');
+  if (goal.direction === 'less') return p.reached ? tr('Innerhalb deiner Grenze', 'Within your limit') : tr('Über der Grenze', 'Over the limit');
+  if (p.reached) return tr('Erreicht', 'Reached');
+  if (p.amount === 0) return tr('Noch offen', 'Not yet');
+  return tr('Unterwegs', 'On the way');
 }
 
 export function greeting(now = new Date()): string {

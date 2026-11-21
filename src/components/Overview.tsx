@@ -4,6 +4,7 @@ import { PALETTE } from '../palette';
 import { addDays, dayAmount, dayKey, fmt, goalProgress, logsOnDay } from '../progress';
 import { useStore } from '../store';
 import { monthStats } from '../consistency';
+import { tr, locale } from '../i18n';
 
 
 export function Overview() {
@@ -17,15 +18,15 @@ export function Overview() {
   const now = new Date();
   const anchor = new Date(now.getFullYear(), now.getMonth() + offset, 1);
 
-  const title = anchor.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+  const title = anchor.toLocaleDateString(locale(), { month: 'long', year: 'numeric' });
 
   return (
     <main className="view">
-      <header className="greet top"><h1>Fortschritt</h1></header>
+      <header className="greet top"><h1>{tr('Fortschritt', 'Progress')}</h1></header>
 
       {themes.length > 1 && (
-        <div className="chips filter" role="group" aria-label="Nach Thema filtern">
-          <button className={`chip${filter === 'all' ? ' on' : ''}`} aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>Alle</button>
+        <div className="chips filter" role="group" aria-label={tr('Nach Thema filtern', 'Filter by theme')}>
+          <button className={`chip${filter === 'all' ? ' on' : ''}`} aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>{tr('Alle', 'All')}</button>
           {themes.map((t) => (
             <button key={t.id} className={`chip${filter === t.id ? ' on' : ''}`} aria-pressed={filter === t.id}
               style={{ '--chip': PALETTE[t.color].soft, '--chip-ink': PALETTE[t.color].ink } as React.CSSProperties}
@@ -35,15 +36,15 @@ export function Overview() {
       )}
 
       <div className="period-nav">
-        <button className="round-btn" onClick={() => setOffset(offset - 1)} aria-label="Zurück">‹</button>
+        <button className="round-btn" onClick={() => setOffset(offset - 1)} aria-label={tr('Zurück', 'Previous')}>‹</button>
         <h2>{title}</h2>
-        <button className="round-btn" onClick={() => setOffset(offset + 1)} disabled={offset >= 0} aria-label="Weiter">›</button>
+        <button className="round-btn" onClick={() => setOffset(offset + 1)} disabled={offset >= 0} aria-label={tr('Weiter', 'Next')}>›</button>
       </div>
 
       {goals.length === 0 ? (
         <section className="empty card">
-          <h2>Noch nichts zum Zurückblicken</h2>
-          <p>Sobald du etwas notierst, erscheint es hier.</p>
+          <h2>{tr('Noch nichts hier', 'Nothing here yet')}</h2>
+          <p>{tr('Sobald du etwas notierst, erscheint es hier.', 'As soon as you log something, it shows up here.')}</p>
         </section>
       ) : (
         <>
@@ -91,9 +92,9 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
     <>
       <section className="card month">
         <div className="month-grid" aria-hidden="true">
-          {['M', 'D', 'M', 'D', 'F', 'S', 'S'].map((w, i) => <span key={i} className="wd">{w}</span>)}
+          {(tr('de', 'en') === 'en' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : ['M', 'D', 'M', 'D', 'F', 'S', 'S']).map((w, i) => <span key={i} className="wd">{w}</span>)}
         </div>
-        <div className="month-weeks" role="grid" aria-label="Tage des Monats">
+        <div className="month-weeks" role="grid" aria-label={tr('Tage des Monats', 'Days of the month')}>
           {weeksOf(lead, scores.length).map((week, wi) => {
             const current = week.some((n) => n !== null && dayKey(new Date(month.getFullYear(), month.getMonth(), n)) === dayKey(new Date()));
             return (
@@ -110,7 +111,7 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
                     <button key={ci} role="gridcell" className={`mcell${future ? ' future' : ''}${isPicked ? ' picked' : ''}${isToday ? ' today' : ''}`}
                       disabled={future} onClick={() => setPicked(isPicked ? null : d)} aria-current={isToday ? 'date' : undefined}
                       style={{ background: sw.soft, color: sw.ink, '--c': sw.base } as React.CSSProperties}
-                      aria-label={`${d.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}${isToday ? ', heute' : ''}${lv ? (s >= 1 ? ', erfüllt' : '') : ', kein Eintrag'}`}>
+                      aria-label={`${d.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}${isToday ? tr(', heute', ', today') : ''}${lv ? (s >= 1 ? tr(', erfüllt', ', done') : '') : tr(', kein Eintrag', ', no entry')}`}>
                       {!future && s > 0 && <span className={`cell-fill${s >= 1 ? ' chrome' : ''}`} style={{ height: `${Math.min(1, s) * 100}%` }} aria-hidden="true" />}
                       <span className="mnum">{n}</span>
                     </button>
@@ -122,8 +123,10 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
         </div>
         <p className="month-summary">
           {activeDays === 0
-            ? 'Diesen Monat noch keine Einträge.'
-            : <>Du warst an <b>{activeDays}</b> {activeDays === 1 ? 'Tag' : 'Tagen'} dabei{blooms > 0 && <>, <b>{blooms}</b>-mal ein Tagesziel erreicht</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> {periodGoalsReached === 1 ? 'Monatsziel' : 'Monatsziele'} erreicht</>}.</>}
+            ? tr('Diesen Monat noch keine Einträge.', 'No entries this month yet.')
+            : tr('de', 'en') === 'en'
+              ? <>You showed up on <b>{activeDays}</b> {activeDays === 1 ? 'day' : 'days'}{blooms > 0 && <>, reached a daily goal <b>{blooms}</b> {blooms === 1 ? 'time' : 'times'}</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> monthly {periodGoalsReached === 1 ? 'goal' : 'goals'} reached</>}.</>
+              : <>Du warst an <b>{activeDays}</b> {activeDays === 1 ? 'Tag' : 'Tagen'} dabei{blooms > 0 && <>, <b>{blooms}</b>-mal ein Tagesziel erreicht</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> {periodGoalsReached === 1 ? 'Monatsziel' : 'Monatsziele'} erreicht</>}.</>}
         </p>
       </section>
       {picked && <DayDetail day={picked} goals={goals} logs={mlogs} />}
@@ -135,8 +138,8 @@ function DayDetail({ day, goals, logs }: { day: Date; goals: Goal[]; logs: Log[]
   const rows = goals.map((g) => ({ g, amt: dayAmount(g.id, logs, day) })).filter((r) => r.amt > 0);
   return (
     <section className="card day-detail" aria-live="polite">
-      <h2>{day.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}</h2>
-      {rows.length === 0 ? <p className="muted">Ein Ruhetag.</p> : (
+      <h2>{day.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}</h2>
+      {rows.length === 0 ? <p className="muted">{tr('Keine Einträge.', 'No entries.')}</p> : (
         <ul className="entries">
           {rows.map(({ g, amt }) => (
             <li key={g.id}><span>{g.name}</span><span className="muted">{fmt(amt)} {g.unit}</span></li>
@@ -154,22 +157,22 @@ function MonthGoals({ month, goals }: { month: Date; goals: Goal[] }) {
   if (month > now) return null;
   return (
     <section className="card">
-      <h2 className="sub" style={{ marginTop: 0 }}>Ziel für Ziel</h2>
+      <h2 className="sub" style={{ marginTop: 0 }}>{tr('Ziel für Ziel', 'Goal by goal')}</h2>
       <ul className="goal-stats">
         {goals.map((g) => {
           const st = monthStats(g, data, month, now);
           if (st.eligible === 0 && st.rested === 0) return null;
-          const parts: string[] = [`an ${st.tracked} von ${st.eligible} Tagen notiert`];
-          if (g.period === 'day') parts.push(`${st.reached} ${g.direction === 'more' ? 'erreicht' : 'innerhalb der Grenze'}`);
-          if (st.periodsTotal > 0) parts.push(`${st.periodsReached} von ${st.periodsTotal} ${g.period === 'week' ? 'Wochen' : 'Monat'} erreicht`);
-          if (st.rested > 0) parts.push(`${st.rested} ${st.rested === 1 ? 'Ruhetag' : 'Ruhetage'}`);
+          const parts: string[] = [tr(`an ${st.tracked} von ${st.eligible} Tagen notiert`, `logged on ${st.tracked} of ${st.eligible} days`)];
+          if (g.period === 'day') parts.push(`${st.reached} ${g.direction === 'more' ? tr('erreicht', 'reached') : tr('innerhalb der Grenze', 'within the limit')}`);
+          if (st.periodsTotal > 0) parts.push(tr(`${st.periodsReached} von ${st.periodsTotal} ${g.period === 'week' ? 'Wochen' : 'Monat'} erreicht`, `${st.periodsReached} of ${st.periodsTotal} ${g.period === 'week' ? 'weeks' : 'months'} reached`));
+          if (st.rested > 0) parts.push(`${st.rested} ${st.rested === 1 ? tr('Ruhetag', 'rest day') : tr('Ruhetage', 'rest days')}`);
           const pct = st.eligible ? st.tracked / st.eligible : 0;
           const th = data.themes.find((t) => t.id === g.themeId);
           const sw = PALETTE[th?.color ?? 'meadow'];
           return (
             <li key={g.id}>
-              <span className="gs-top"><span>{g.name}</span><span className="gs-pct">{Math.round(pct * 100)}% der Tage</span></span>
-              <span className="bar" role="img" aria-label={`An ${st.tracked} von ${st.eligible} Tagen notiert`} style={{ background: sw.soft, margin: 0 }}>
+              <span className="gs-top"><span>{g.name}</span><span className="gs-pct">{Math.round(pct * 100)}% {tr('der Tage', 'of days')}</span></span>
+              <span className="bar" role="img" aria-label={tr(`An ${st.tracked} von ${st.eligible} Tagen notiert`, `Logged on ${st.tracked} of ${st.eligible} days`)} style={{ background: sw.soft, margin: 0 }}>
                 <span className="bar-fill" style={{ width: `${pct * 100}%`, background: sw.base, display: 'block' }} />
               </span>
               <span className="gs-meta">{parts.join(' · ')}</span>

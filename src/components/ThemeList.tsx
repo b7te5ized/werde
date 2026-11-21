@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import { useDragList } from '../useDragList';
 import type { Goal, Theme } from '../types';
 import { GoalCard } from './GoalCard';
+import { tr } from '../i18n';
 
 /**
  * Themes with their goals. Themes fold open and closed and move by their handle;
@@ -27,14 +28,14 @@ export function ThemeList({ onOpenGoal }: { onOpenGoal: (g: Goal) => void }) {
           <section key={th.id} className={`theme-block${dl.dragId === th.id ? ' lifted' : ''}${open ? '' : ' folded'}`} ref={dl.itemRef(th.id)}>
             <div className="theme-head">
               <button className="theme-toggle" onClick={() => toggleThemeOpen(th.id)} aria-expanded={!th.collapsed}
-                aria-label={`${th.name}, ${th.collapsed ? 'aufklappen' : 'zuklappen'}`}>
+                aria-label={`${th.name}, ${th.collapsed ? tr('aufklappen', 'expand') : tr('zuklappen', 'collapse')}`}>
                 <span className="theme-icon" style={{ background: sw.soft }}>{th.icon}</span>
                 <span className="theme-name">{th.name}</span>
                 {!open && active.length > 0 && <span className="theme-count">{done}/{active.length}</span>}
                 <svg className="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
               {data.themes.length > 1 && (
-                <button className="drag-handle" aria-label={`${th.name} verschieben. Pfeiltasten hoch und runter.`}
+                <button className="drag-handle" aria-label={tr(`${th.name} verschieben. Pfeiltasten hoch und runter.`, `Move ${th.name}. Arrow keys up and down.`)}
                   onPointerDown={(e) => dl.startHandle(th.id, e)} onContextMenu={(e) => e.preventDefault()}
                   onKeyDown={(e) => {
                     if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
@@ -60,7 +61,7 @@ function ThemeGoals({ theme, goals, onOpenGoal }: { theme: Theme; goals: Goal[];
   const { reorderGoals } = useStore();
   const dl = useDragList({ ids: goals.map((g) => g.id), onCommit: (ids) => reorderGoals(theme.id, ids) });
   const ordered = dl.order.map((id) => goals.find((g) => g.id === id)!).filter(Boolean);
-  if (goals.length === 0) return <div className="theme-goals"><p className="muted pad">Hier gibt es noch keine Ziele.</p></div>;
+  if (goals.length === 0) return <div className="theme-goals"><p className="muted pad">{tr('Hier gibt es noch keine Ziele.', 'No goals here yet.')}</p></div>;
   return (
     <div className={`theme-goals${dl.dragging ? ' dragging' : ''}`}>
       {ordered.map((g) => (

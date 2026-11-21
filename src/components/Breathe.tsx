@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '../store';
+import { tr } from '../i18n';
 
 /** An optional, skippable breathing moment after noting something. One slow breath. */
 export function Breathe() {
@@ -18,10 +19,10 @@ export function Breathe() {
 
   if (!breathing) return null;
   return (
-    <div className="breathe" role="dialog" aria-label="Ein Atemmoment">
+    <div className="breathe" role="dialog" aria-label={tr('Ein Atemmoment', 'A breathing moment')}>
       <div className={`breathe-circle ${phase}`} aria-hidden="true" />
-      <p className="breathe-word" aria-live="polite">{phase === 'in' ? 'Einatmen' : 'und ausatmen'}</p>
-      <button className="secondary" onClick={endBreathing} autoFocus>Überspringen</button>
+      <p className="breathe-word" aria-live="polite">{phase === 'in' ? tr('Einatmen', 'Breathe in') : tr('und ausatmen', 'and out')}</p>
+      <button className="secondary" onClick={endBreathing} autoFocus>{tr('Überspringen', 'Skip')}</button>
     </div>
   );
 }

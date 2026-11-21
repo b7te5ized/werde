@@ -1,4 +1,5 @@
 import type { Data } from './types';
+import { tr } from './i18n';
 
 /** Saves a JSON copy of everything. Uses the claude.ai downloads capability when present. */
 export async function exportData(data: Data): Promise<boolean> {
@@ -14,7 +15,7 @@ export async function exportData(data: Data): Promise<boolean> {
   if (coarse && typeof navigator.canShare === 'function') {
     const file = new File([json], filename, { type: 'application/json' });
     if (navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'werde Sicherung' }); return true; }
+      try { await navigator.share({ files: [file], title: tr('werde Sicherung', 'werde backup') }); return true; }
       catch (e) { if ((e as Error).name === 'AbortError') return false; /* fall back to download */ }
     }
   }

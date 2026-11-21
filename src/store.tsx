@@ -3,6 +3,7 @@ import type { Data, Goal, Log, Settings, Theme } from './types';
 import { dayKey, goalProgress, periodStart } from './progress';
 import { MILESTONES, rhythm, UNIT_WORD } from './consistency';
 import { connectCloud, type Cloud } from './cloud';
+import { tr } from './i18n';
 
 const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v6' : 'werde.data.v1';
 
@@ -182,7 +183,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const p = prev.current;
       prev.current = null;
       setData(p);
-      setToast({ id: Date.now(), text: 'Rückgängig gemacht', undo: false });
+      setToast({ id: Date.now(), text: tr('Rückgängig gemacht', 'Undone'), undo: false });
     }
   }, []);
 
@@ -205,14 +206,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const next = ids.map((id) => byId.get(id)).filter((t): t is Theme => !!t);
       for (const t of d.themes) if (!ids.includes(t.id)) next.push(t);
       return { ...d, themes: next };
-    }, 'Reihenfolge geändert'),
+    }, tr('Reihenfolge geändert', 'Order changed')),
     reorderGoals: (themeId, ids) => change((d) => {
       const byId = new Map(d.goals.map((g) => [g.id, g]));
       const queue = ids.map((id) => byId.get(id)).filter((g): g is Goal => !!g && g.themeId === themeId);
       // keep other themes' goals where they are, refill this theme's slots in the new order
       const goals = d.goals.map((g) => (g.themeId === themeId ? queue.shift() ?? g : g));
       return { ...d, goals };
-    }, 'Reihenfolge geändert'),
+    }, tr('Reihenfolge geändert', 'Order changed')),
     toggleThemeOpen: (id) => setData((d) => ({ ...d, themes: d.themes.map((t) => (t.id === id ? { ...t, collapsed: !t.collapsed } : t)) })),
     deleteTheme: (id) =>
       change((d) => {
@@ -223,10 +224,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           goals: d.goals.filter((g) => !goalIds.has(g.id)),
           logs: d.logs.filter((l) => !goalIds.has(l.goalId)),
         };
-      }, 'Thema entfernt'),
+      }, tr('Thema entfernt', 'Theme removed')),
     saveGoal: (g) => change((d) => ({ ...d, goals: upsert(d.goals, g) })),
     deleteGoal: (id) =>
-      change((d) => ({ ...d, goals: d.goals.filter((g) => g.id !== id), logs: d.logs.filter((l) => l.goalId !== id) }), 'Ziel entfernt'),
+      change((d) => ({ ...d, goals: d.goals.filter((g) => g.id !== id), logs: d.logs.filter((l) => l.goalId !== id) }), tr('Ziel entfernt', 'Goal removed')),
     log: (goalId, amount) => {
       const entry: Log = { id: uid(), goalId, amount, at: Date.now() };
       const goal = data.goals.find((g) => g.id === goalId);
@@ -251,17 +252,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const dayComplete = !allDone(data.logs) && allDone(nextLogs) && celebrated.__day !== today;
         if (dayComplete) celebrated.__day = today;
 
-        if (bloom && goal.period === 'month') cel = { id: Date.now(), kind: 'big', title: goal.name, note: 'Dein Ziel für diesen Monat' };
-        else if (dayComplete) cel = { id: Date.now(), kind: 'small', title: 'Alle Ziele für heute' };
-        else if (bloom && goal.period === 'week') cel = { id: Date.now(), kind: 'small', title: `${goal.name}, diese Woche` };
+        if (bloom && goal.period === 'month') cel = { id: Date.now(), kind: 'big', title: goal.name, note: tr('Dein Ziel für diesen Monat', 'Your goal for this month') };
+        else if (dayComplete) cel = { id: Date.now(), kind: 'small', title: tr('Alle Ziele für heute', 'All goals for today') };
+        else if (bloom && goal.period === 'week') cel = { id: Date.now(), kind: 'small', title: `${goal.name}, ${tr('diese Woche', 'this week')}` };
 
-        if (!before.doneNow && after.doneNow && MILESTONES.includes(after.streak)) note = `${after.streak} ${UNIT_WORD[goal.period][1]} dabei`;
-        else if (before.missedLast && !data.logs.some((l) => l.goalId === goalId && l.at >= ps)) note = 'Schön, dass du wieder da bist';
+        if (!before.doneNow && after.doneNow && MILESTONES.includes(after.streak)) note = `${after.streak} ${UNIT_WORD[goal.period][1]}`;
+        else if (before.missedLast && !data.logs.some((l) => l.goalId === goalId && l.at >= ps)) note = tr('Schön, dass du wieder da bist', 'Good to have you back');
       }
-      change((d) => ({ ...d, logs: [...d.logs, entry], celebrated }), note ? `Notiert · ${note}` : 'Notiert');
+      change((d) => ({ ...d, logs: [...d.logs, entry], celebrated }), note ? `${tr('Notiert', 'Logged')} · ${note}` : tr('Notiert', 'Logged'));
       if (cel) setCelebration(cel);
     },
-    deleteLog: (id) => change((d) => ({ ...d, logs: d.logs.filter((l) => l.id !== id) }), 'Eintrag entfernt'),
+    deleteLog: (id) => change((d) => ({ ...d, logs: d.logs.filter((l) => l.id !== id) }), tr('Eintrag entfernt', 'Entry removed')),
     toggleRestDay: (day) => {
       const k = dayKey(day);
       const tomorrow = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime();
@@ -292,8 +293,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       return { ...d, dayNotes: all };
     }),
     setTexts: (t) => setData((d) => { const n = { ...d }; if (t) n.texts = t; else delete n.texts; return n; }),
-    removeNote: (id) => change((d) => ({ ...d, notes: d.notes.filter((n) => n.id !== id) }), 'Notiz entfernt'),
-    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now(), welcomed: true }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, notes: nd.notes ?? [], celebrated: nd.celebrated ?? {} }), 'Kopie zurückgeholt'),
+    removeNote: (id) => change((d) => ({ ...d, notes: d.notes.filter((n) => n.id !== id) }), tr('Notiz entfernt', 'Note removed')),
+    replaceAll: (nd) => change(() => ({ ...empty(), ...nd, settings: { ...DEFAULT_SETTINGS, ...nd.settings, lastBackupAt: Date.now(), welcomed: true }, restDays: nd.restDays ?? [], freezes: nd.freezes ?? {}, notes: nd.notes ?? [], celebrated: nd.celebrated ?? {} }), tr('Backup geladen', 'Backup loaded')),
   };
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>;

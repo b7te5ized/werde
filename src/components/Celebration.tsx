@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import { Sparkle } from './Art';
+import { tr } from '../i18n';
 
 const CONFETTI = ['#f294ad', '#f3c93f', '#b59ae6', '#86c0e6', '#8cc265', '#fbe0e8', '#fff3b0'];
 
@@ -49,7 +50,7 @@ export function Celebration() {
   }
 
   return (
-    <div className={`celebrate${reduced ? ' still' : ''}`} role="alertdialog" aria-label={`${goal.title} geschafft`} onClick={clearCelebration}>
+    <div className={`celebrate${reduced ? ' still' : ''}`} role="alertdialog" aria-label={tr(`${goal.title} geschafft`, `${goal.title} done`)} onClick={clearCelebration}>
       <div className="celebrate-stage" aria-hidden="true">
         {!reduced && petals.map((p, i) => (
           <span key={i} className={`confetti c${p.shape}`} style={{
@@ -80,7 +81,7 @@ export function Celebration() {
         </svg>
       </div>
       <div className="celebrate-text">
-        <p className="celebrate-eyebrow">Geschafft</p>
+        <p className="celebrate-eyebrow">{tr('Geschafft', 'Done')}</p>
         <h2>{goal.title}</h2>
         {goal.note && <p className="celebrate-note">{goal.note}</p>}
       </div>

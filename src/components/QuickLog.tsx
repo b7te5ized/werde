@@ -3,6 +3,7 @@ import { fmt, goalProgress, PERIOD_LABEL, todayFill } from '../progress';
 import { useStore } from '../store';
 import { Fill } from './Fill';
 import { categoryOf } from '../categories';
+import { tr } from '../i18n';
 
 /** A calm grid of big tiles: one tap notes one step. Made for the home-screen shortcut. */
 export function QuickLog({ onClose }: { onClose: () => void }) {
@@ -13,12 +14,12 @@ export function QuickLog({ onClose }: { onClose: () => void }) {
     <main className="view quick">
       <header className="greet top quick-head">
         <div>
-          <h1>Erfassen</h1>
+          <h1>{tr('Erfassen', 'Log')}</h1>
         </div>
-        <button className="secondary" onClick={onClose}>Fertig</button>
+        <button className="secondary" onClick={onClose}>{tr('Fertig', 'Done')}</button>
       </header>
       {goals.length === 0 ? (
-        <p className="card muted">Erstelle zuerst ein Ziel, dann erscheint es hier.</p>
+        <p className="card muted">{tr('Erstelle zuerst ein Ziel, dann erscheint es hier.', 'Set a goal first, then it shows up here.')}</p>
       ) : (
         <div className="quick-grid">
           {goals.map((g) => {
@@ -28,7 +29,7 @@ export function QuickLog({ onClose }: { onClose: () => void }) {
             return (
               <button key={g.id} className="quick-tile" 
                 onClick={() => { log(g.id, g.step); navigator.vibrate?.(12); }}
-                aria-label={`${fmt(g.step)} ${g.unit} zu ${g.name} hinzufügen. Jetzt ${fmt(p.amount)} von ${fmt(g.target)} ${PERIOD_LABEL[g.period]}`}>
+                aria-label={tr(`${fmt(g.step)} ${g.unit} zu ${g.name} hinzufügen. Jetzt ${fmt(p.amount)} von ${fmt(g.target)} ${PERIOD_LABEL[g.period]}`, `Add ${fmt(g.step)} ${g.unit} to ${g.name}. Now ${fmt(p.amount)} of ${fmt(g.target)} ${PERIOD_LABEL[g.period]}`)}>
                 <Fill pct={todayFill(g, data.logs)} color={sw.base} category={categoryOf(g)} />
                 <span className="quick-name">{g.name}</span>
                 <span className="quick-meta">{fmt(p.amount)} / {fmt(g.target)} {g.unit}</span>

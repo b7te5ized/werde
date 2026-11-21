@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import { tr } from '../i18n';
 
 export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,7 +19,7 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
         <div className="sheet-handle" aria-hidden="true" />
         <header className="sheet-head">
           <h2>{title}</h2>
-          <button className="sheet-close" onClick={onClose} aria-label="Schließen">✕</button>
+          <button className="sheet-close" onClick={onClose} aria-label={tr('Schließen', 'Close')}>✕</button>
         </header>
         <div className="sheet-body">{children}</div>
       </div>

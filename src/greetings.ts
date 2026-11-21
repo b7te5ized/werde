@@ -1,3 +1,4 @@
+import { getLang, tr } from './i18n';
 /**
  * Greetings per time of day (without the name: the name lives in the quote below). A line is plain text or variants by pronoun, so
  * gendered words (Queen/King/…) adapt. "{name}" is the person's name; ", {name}"
@@ -56,12 +57,27 @@ export function renderText(text: Text, name: string, pronoun: Pronoun): string {
 export interface CustomTexts { greetings: Record<Slot, string[]>; quotes: string[] }
 
 export const SLOT_ICON: Record<Slot, GreetIconKind> = { morning: 'sunrise', lunch: 'sparkles', afternoon: 'sparkles', evening: 'star', night: 'moon' };
-export const SLOT_LABEL: Record<Slot, string> = { morning: 'Morgen (5 bis 11 Uhr)', lunch: 'Mittag (11 bis 14 Uhr)', afternoon: 'Nachmittag (14 bis 17 Uhr)', evening: 'Abend (17 bis 22 Uhr)', night: 'Nacht (22 bis 5 Uhr)' };
+export const SLOT_LABEL = {
+  get morning() { return tr('Morgen (5 bis 11 Uhr)', 'Morning (5 to 11 am)'); },
+  get lunch() { return tr('Mittag (11 bis 14 Uhr)', 'Lunch (11 am to 2 pm)'); },
+  get afternoon() { return tr('Nachmittag (14 bis 17 Uhr)', 'Afternoon (2 to 5 pm)'); },
+  get evening() { return tr('Abend (17 bis 22 Uhr)', 'Evening (5 to 10 pm)'); },
+  get night() { return tr('Nacht (22 bis 5 Uhr)', 'Night (10 pm to 5 am)'); },
+} as Record<Slot, string>;
+
+/** English versions of the built-in German lines. */
+const EN_ALT: Record<string, string> = {
+  'Charisma, Uniqueness, Nerve & Talent. Alles da.': 'Charisma, Uniqueness, Nerve & Talent. All there.',
+  'Was für ein Tag, Legende.': 'What a day, legend.',
+  'Gute Nacht.': 'Good night.',
+  'Wünsche, statt Erwartungen, {name}.': 'Wishes, not expectations, {name}.',
+};
+const loc = (t: string) => (getLang() === 'en' ? EN_ALT[t] ?? t : t);
 export const SLOTS: Slot[] = ['morning', 'lunch', 'afternoon', 'evening', 'night'];
 
 /** The built-in lines as editable plain text (a starting point for the person's own). */
 export function defaultTexts(): CustomTexts {
-  const plain = (t: Text) => (typeof t === 'string' ? t : t.they);
+  const plain = (t: Text) => loc(typeof t === 'string' ? t : t.they);
   return {
     greetings: Object.fromEntries(SLOTS.map((k) => [k, GREETINGS[k].map((l) => plain(l.text))])) as Record<Slot, string[]>,
     quotes: QUOTES.map(plain),
@@ -70,8 +86,8 @@ export function defaultTexts(): CustomTexts {
 
 function linesFor(slot: Slot, custom?: CustomTexts): Line[] {
   const own = custom?.greetings?.[slot]?.filter((t) => t.trim());
-  if (!own || own.length === 0) return GREETINGS[slot];
-  return own.map((text) => GREETINGS[slot].find((l) => l.text === text) ?? { text, icon: SLOT_ICON[slot] });
+  if (!own || own.length === 0) return GREETINGS[slot].map((l) => (typeof l.text === 'string' ? { ...l, text: loc(l.text) } : l));
+  return own.map((text) => ({ text, icon: GREETINGS[slot].find((l) => l.text === text || (typeof l.text === 'string' && loc(l.text) === text))?.icon ?? SLOT_ICON[slot] }));
 }
 
 let lastPick = '';
@@ -98,7 +114,7 @@ export const QUOTES: Text[] = [
 let lastQuote = -1;
 export function pickQuote(name: string, pronoun: Pronoun, custom?: CustomTexts): string {
   const own = custom?.quotes?.filter((t) => t.trim());
-  const list: Text[] = own && own.length ? own : QUOTES;
+  const list: Text[] = own && own.length ? own : QUOTES.map((q) => (typeof q === 'string' ? loc(q) : q));
   let i = Math.floor(Math.random() * list.length);
   if (i === lastQuote && list.length > 1) i = (i + 1) % list.length;
   lastQuote = i;

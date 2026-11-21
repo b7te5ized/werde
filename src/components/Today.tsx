@@ -8,6 +8,7 @@ import { backupDue, exportData, POSTPONE_TO } from '../backup';
 import type { Sky } from '../sky';
 import { ThemeList } from './ThemeList';
 import { RestoreButton } from './RestoreButton';
+import { tr } from '../i18n';
 
 interface Props {
   sky: Sky;
@@ -43,43 +44,43 @@ export function Today({ sky, onQuickLog, onNewGoal, onOpenGoal, onEditTheme }: P
       <header className="greet top">
         <div className="greet-row">
           <h1 className={greet.text.length > 26 ? 'long' : undefined}>{headOf(greet.text)}<span className="nowrap">{tailOf(greet.text)}<GreetIcon key={greet.text} kind={greet.icon} /></span></h1>
-          {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>Erfassen</button>}
+          {active.length > 0 && <button className="secondary small-btn" onClick={onQuickLog}>{tr('Erfassen', 'Log')}</button>}
         </div>
         <p className="quote" key={quote}>{quote}</p>
       </header>
 
       {sync === 'local' && inClaude && (
         <section className="card save-note" role="status">
-          <p><b>Wird nicht dauerhaft gespeichert.</b> Melde dich bei Claude an und öffne werde über einen persönlichen Einladungslink, damit deine Einträge in deinem Konto bleiben.</p>
+          <p><b>{tr('Wird nicht dauerhaft gespeichert.', 'Not saved permanently.')}</b> {tr('Melde dich bei Claude an und öffne werde über einen persönlichen Einladungslink, damit deine Einträge in deinem Konto bleiben.', 'Sign in to Claude and open werde from a personal invite link so your entries stay in your account.')}</p>
         </section>
       )}
       {showBackup && (
         <section className="card backup-note" role="status">
-          <p>Deine Einträge liegen nur auf diesem Gerät. Magst du eine Kopie sichern?</p>
+          <p>{tr('Deine Einträge liegen nur auf diesem Gerät. Magst du eine Kopie sichern?', 'Your entries live only on this device. Save a backup?')}</p>
           <div className="row">
-            <button className="secondary small-btn" onClick={async () => { if (await exportData(data)) saveSettings({ lastBackupAt: Date.now() }); }}>Kopie sichern</button>
-            <button className="text-btn" onClick={() => saveSettings({ backupSnoozeUntil: POSTPONE_TO() })}>Später</button>
+            <button className="secondary small-btn" onClick={async () => { if (await exportData(data)) saveSettings({ lastBackupAt: Date.now() }); }}>{tr('Kopie sichern', 'Save backup')}</button>
+            <button className="text-btn" onClick={() => saveSettings({ backupSnoozeUntil: POSTPONE_TO() })}>{tr('Später', 'Later')}</button>
           </div>
         </section>
       )}
       {resting && (
         <section className="card rest-banner" role="status">
           <span aria-hidden="true" style={{ fontSize: 26 }}>🌙</span>
-          <p>Heute ist Ruhetag.</p>
-          <button className="text-btn" onClick={() => toggleRestDay(new Date())}>Beenden</button>
+          <p>{tr('Heute ist Ruhetag.', 'Today is a rest day.')}</p>
+          <button className="text-btn" onClick={() => toggleRestDay(new Date())}>{tr('Beenden', 'End')}</button>
         </section>
       )}
       {data.themes.length === 0 ? (
         <section className="empty card">
-          <h2>Das ist deine Lichtung</h2>
-          <p>Noch keine Ziele.</p>
-          <button className="primary" onClick={() => onNewGoal()}>+ Ziel setzen</button>
-          {!inClaude && <RestoreButton className="text-btn" label="Ich habe eine Sicherung" />}
+          <h2>{tr('Willkommen bei werde', 'Welcome to werde')}</h2>
+          <p>{tr('Noch keine Ziele.', 'No goals yet.')}</p>
+          <button className="primary" onClick={() => onNewGoal()}>{tr('+ Ziel setzen', '+ Set a goal')}</button>
+          {!inClaude && <RestoreButton className="text-btn" label={tr('Ich habe eine Sicherung', 'I have a backup')} />}
         </section>
       ) : (
         <>
           <ThemeList onOpenGoal={onOpenGoal} />
-          <button className="primary ghost" onClick={() => onNewGoal()}>+ Ziel setzen</button>
+          <button className="primary ghost" onClick={() => onNewGoal()}>{tr('+ Ziel setzen', '+ Set a goal')}</button>
         </>
       )}
     </main>

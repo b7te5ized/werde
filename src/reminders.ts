@@ -1,5 +1,6 @@
 import type { Settings } from './types';
 import { dayKey } from './progress';
+import { tr } from './i18n';
 
 const toMin = (hhmm: string) => {
   const [h, m] = hhmm.split(':').map(Number);
@@ -30,10 +31,9 @@ export function shouldNudge(now: Date, lastActivity: number, settings: Settings,
   return now.getTime() - since >= gap;
 }
 
-export const NUDGES = [
-  'Deine Wiese ist da, wann immer du bereit bist.',
-  'Ein kleiner Moment für dich? werde ist offen.',
-  'Keine Eile. Nur ein leises Hallo von deiner Lichtung.',
+export const nudges = () => [
+  tr('Ein kleiner Moment für dich? werde ist offen.', 'A small moment for you? werde is open.'),
+  tr('Keine Eile. Nur ein kurzes Hallo.', 'No rush. Just a quick hello.'),
 ];
 
 export async function showNudge(text: string): Promise<boolean> {
