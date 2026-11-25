@@ -673,3 +673,8 @@ html, body, * { hyphens: manual; -webkit-hyphens: manual; }
 .sheet-head h2 { flex: 1 1 auto; min-width: 7em; }
 .sheet-action .act-short { display: none; }
 @media (max-width: 420px) { .sheet-action .act-long { display: none; } .sheet-action .act-short { display: inline; } }
+
+/* goal detail: note an entry for yesterday or the day before */
+.day-pick { gap: 6px; margin: 0 0 12px; }
+.day-pick .chip { padding: 5px 12px; font-size: 14px; font-weight: 600; }
+.day-pick-sum { margin: -4px 0 10px; font-size: 14px; }
