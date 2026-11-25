@@ -47,6 +47,8 @@ export interface Settings {
   quietStart: string; // "22:00"
   quietEnd: string; // "07:00"
   celebrations: boolean;
+  /** sounds with celebrations */
+  sound?: boolean;
   remindersOn: boolean;
   lastNudgeAt: number;
   firstOpenedAt: number;
