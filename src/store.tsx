@@ -8,7 +8,7 @@ import { tr, locale } from './i18n';
 const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v6' : 'werde.data.v1';
 
 const DEFAULT_SETTINGS: Settings = {
-  reminderHours: 5, quietStart: '22:00', quietEnd: '07:00', celebrations: true,
+  reminderHours: 5, quietStart: '22:00', quietEnd: '07:00', celebrations: true, sound: true,
   remindersOn: false, lastNudgeAt: 0, firstOpenedAt: Date.now(), openInQuickLog: false, skyMode: 'auto', breathingMoment: false, restUntil: 0, name: '', pronoun: '', customPronoun: '', welcomed: false, lastBackupAt: 0, backupSnoozeUntil: 0,
 };
 
@@ -70,7 +70,7 @@ function demo(): Data {
 
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 
-export interface Celebrate { id: number; kind: 'small' | 'big'; title: string; note?: string; color?: string }
+export interface Celebrate { id: number; kind: 'goal' | 'day' | 'big'; title: string; note?: string; color?: string }
 
 interface Toast { id: number; text: string; undo: boolean }
 
@@ -261,15 +261,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const dayComplete = !allDone(data.logs) && allDone(nextLogs) && celebrated.__day !== today;
         if (dayComplete) celebrated.__day = today;
 
-        if (bloom && goal.period === 'month') cel = { id: Date.now(), kind: 'big', title: goal.name, note: tr('Dein Ziel für diesen Monat', 'Your goal for this month') };
-        else if (dayComplete) cel = { id: Date.now(), kind: 'small', title: tr('Alle Ziele für heute', 'All goals for today') };
-        else if (bloom && goal.period === 'week') cel = { id: Date.now(), kind: 'small', title: `${goal.name}, ${tr('diese Woche', 'this week')}` };
+        // the whole day beats a single goal; a month goal keeps its bloom
+        if (dayComplete) cel = { id: Date.now(), kind: 'day', title: tr('Alle Ziele für heute', 'All goals for today') };
+        else if (bloom && goal.period === 'month') cel = { id: Date.now(), kind: 'big', title: goal.name, note: tr('Dein Ziel für diesen Monat', 'Your goal for this month') };
+        else if (bloom) cel = { id: Date.now(), kind: 'goal', title: goal.period === 'week' ? `${goal.name}, ${tr('diese Woche', 'this week')}` : goal.name };
 
         if (!before.doneNow && after.doneNow && MILESTONES.includes(after.streak)) note = `${after.streak} ${UNIT_WORD[goal.period][1]}`;
         else if (before.missedLast && !data.logs.some((l) => l.goalId === goalId && l.at >= ps)) note = tr('Schön, dass du wieder da bist', 'Good to have you back');
       }
       change((d) => ({ ...d, logs: [...d.logs, entry], celebrated }), note ? `${tr('Notiert', 'Logged')} · ${note}` : tr('Notiert', 'Logged'));
-      if (cel) setCelebration(cel);
+      if (cel && data.settings.celebrations !== false) setCelebration(cel);
     },
     deleteLog: (id) => change((d) => ({ ...d, logs: d.logs.filter((l) => l.id !== id) }), tr('Eintrag entfernt', 'Entry removed')),
     toggleRestDay: (day) => {

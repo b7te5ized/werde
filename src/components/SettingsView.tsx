@@ -9,6 +9,7 @@ import { enableNotifications } from '../useReminders';
 import { isStandalone } from '../pwa';
 import { dayKey } from '../progress';
 import { exportData } from '../backup';
+import { playGoal } from '../sound';
 import { PALETTE } from '../palette';
 import { useStore } from '../store';
 import type { Theme } from '../types';
@@ -153,6 +154,19 @@ export function SettingsView({ onEditTheme }: { onEditTheme: (t: Theme) => void 
         <label className="toggle">
           <span>{tr('Direkt mit dem Schnelleintrag starten', 'Open straight into quick log')}</span>
           <input type="checkbox" checked={s.openInQuickLog} onChange={(e) => saveSettings({ openInQuickLog: e.target.checked })} />
+        </label>
+      </section>
+
+      <section className="card settings">
+        <h2>{tr('Feiern', 'Celebrations')}</h2>
+        <label className="toggle">
+          <span>{tr('Regenbogen, wenn du ein Ziel erreichst', 'Rainbow when you reach a goal')}</span>
+          <input type="checkbox" checked={s.celebrations !== false} onChange={(e) => saveSettings({ celebrations: e.target.checked })} />
+        </label>
+        <label className="toggle">
+          <span>{tr('Töne', 'Sounds')}</span>
+          <input type="checkbox" checked={s.sound !== false} disabled={s.celebrations === false}
+            onChange={(e) => { saveSettings({ sound: e.target.checked }); if (e.target.checked) playGoal(); }} />
         </label>
       </section>
 

@@ -678,3 +678,53 @@ html, body, * { hyphens: manual; -webkit-hyphens: manual; }
 .day-pick { gap: 6px; margin: 0 0 12px; }
 .day-pick .chip { padding: 5px 12px; font-size: 14px; font-weight: 600; }
 .day-pick-sum { margin: -4px 0 10px; font-size: 14px; }
+
+/* rainbows: one for every goal reached, a whole sky when the day is complete */
+.rainbow-arc { overflow: visible; display: block; }
+.rainbow-arc path { stroke-dasharray: 100; stroke-dashoffset: 0; animation: rainbow-draw .75s cubic-bezier(.3,.7,.3,1) both; }
+@keyframes rainbow-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+.rainbow-goal .rainbow-arc { position: absolute; left: 0; top: -22px; transform: translate(-50%, -100%); animation: rainbow-fade 2.7s ease both; }
+@keyframes rainbow-fade { 0% { opacity: 0; } 8%, 78% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, calc(-100% - 10px)); } }
+.rainbow-goal .celebrate-pill { animation-duration: 2.7s; }
+.rainbow-goal .celebrate-pill span { background: linear-gradient(90deg, #f2777a, #f3cd4a, #8cc265, #6f9be3, #b08ae6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.rainbow-day { background: color-mix(in srgb, var(--bg) 80%, transparent); }
+.rainbow-glow { position: absolute; inset: -30%; pointer-events: none; opacity: .32;
+  background: conic-gradient(from 0deg, #f2777a, #f5a35c, #f3cd4a, #8cc265, #5fbfb4, #6f9be3, #b08ae6, #f2777a);
+  filter: blur(70px); animation: rainbow-spin 9s linear infinite, fade .8s ease both; }
+@keyframes rainbow-spin { to { transform: rotate(1turn); } }
+.rainbow-stage { width: 320px; height: 240px; }
+.rainbow-stage .rainbow-arc { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); animation: rainbow-float 3.2s ease-in-out .9s infinite; }
+.rainbow-stage .rainbow-arc path { animation-duration: .95s; }
+@keyframes rainbow-float { 50% { transform: translateX(-50%) translateY(-6px); } }
+.rainbow-sparkles { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); overflow: visible; }
+.rainbow-sparkles path { transform-box: fill-box; transform-origin: center; animation: sparkle-pop 1.4s ease-in-out infinite both; }
+.rainbow-sparkles path:nth-child(2) { animation-delay: .35s; } .rainbow-sparkles path:nth-child(3) { animation-delay: .7s; }
+.rainbow-sparkles path:nth-child(4) { animation-delay: .5s; } .rainbow-sparkles path:nth-child(5) { animation-delay: .9s; }
+.rainbow-sparkles path:nth-child(6) { animation-delay: .2s; }
+@keyframes sparkle-pop { 0%, 100% { opacity: 0; scale: .3; } 50% { opacity: 1; scale: 1.15; } }
+.rainbow-day .celebrate-text { animation-delay: .8s; position: relative; }
+.rainbow-day .celebrate-text h2 { font-size: 32px; }
+.rainbow-text { background: linear-gradient(90deg, #e86064, #ee9449, #d9ad20, #6fa94b, #3fa79b, #5583d4, #9a72d6); -webkit-background-clip: text; background-clip: text; color: transparent;
+  font-size: 15px; letter-spacing: .14em; }
+.rainbow-day .confetti { top: 46%; }
+.celebrate-stage .rainbow-arc.behind { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); opacity: .9; }
+.celebrate-stage .rainbow-arc.behind path { animation-delay: .4s; }
+@media (prefers-reduced-motion: reduce) {
+  .rainbow-sparkles path { opacity: 1; }
+}
+
+/* a day where every goal was reached: rainbow in the calendar */
+.cell-fill.rainbow {
+  background:
+    linear-gradient(160deg, rgba(255,255,255,.75) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 55%, rgba(255,255,255,.45) 66%, rgba(255,255,255,0) 80%),
+    linear-gradient(180deg, #f2777a 0%, #f5a35c 17%, #f3cd4a 33%, #8cc265 50%, #5fbfb4 66%, #6f9be3 83%, #b08ae6 100%);
+  background-size: 100% 260%, 100% 100%;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 2px rgba(0,0,0,.18);
+  animation: rainbow-shift 6s ease-in-out infinite alternate;
+}
+@keyframes rainbow-shift { from { background-position: 0 0, 0 0; } to { background-position: 0 100%, 0 0; } }
+.mcell.rainbow { color: #2b2530 !important; }
+.mcell.rainbow .mnum { text-shadow: 0 0 6px rgba(255,255,255,.95), 0 0 2px rgba(255,255,255,.9); }
+.month-summary .rainbow-text { font-size: inherit; letter-spacing: 0; font-weight: 800; }
+.celebrate-small.rainbow-goal { top: calc(190px + env(safe-area-inset-top)); }

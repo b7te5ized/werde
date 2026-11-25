@@ -48,7 +48,7 @@ export function Overview() {
         </section>
       ) : (
         <>
-          <MonthView month={anchor} goals={goals} themes={themes} logs={data.logs} filterTheme={themes.find((t) => t.id === filter)} />
+          <MonthView month={anchor} goals={goals} themes={themes} logs={data.logs} freezes={data.freezes} filterTheme={themes.find((t) => t.id === filter)} />
           <MonthGoals month={anchor} goals={goals} />
         </>
       )}
@@ -56,7 +56,7 @@ export function Overview() {
   );
 }
 
-function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; goals: Goal[]; themes: Theme[]; logs: Log[]; filterTheme?: Theme }) {
+function MonthView({ month, goals, themes, logs, freezes, filterTheme }: { month: Date; goals: Goal[]; themes: Theme[]; logs: Log[]; freezes: Record<string, string[]>; filterTheme?: Theme }) {
   const [picked, setPicked] = useState<Date | null>(null);
   const sw = PALETTE[filterTheme?.color ?? 'meadow'];
   const ids = new Set(goals.map((g) => g.id));
@@ -77,6 +77,21 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month.getTime(), goals, logs]);
+
+  // every daily goal reached that day (frozen goals left out): a rainbow day
+  const rainbow = useMemo(() => {
+    const out: boolean[] = [];
+    for (let i = 1; i <= daysIn; i++) {
+      const d = new Date(month.getFullYear(), month.getMonth(), i);
+      const k = dayKey(d);
+      const daily = goals.filter((g) => g.period === 'day' && g.direction === 'more' && !g.paused
+        && g.createdAt < addDays(d, 1).getTime() && !freezes[g.id]?.includes(k));
+      out.push(daily.length > 0 && daily.every((g) => dayAmount(g.id, mlogs, d) >= g.target));
+    }
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month.getTime(), goals, logs, freezes]);
+  const rainbowDays = rainbow.filter(Boolean).length;
 
   const activeDays = scores.filter((s) => s > 0).length;
   const blooms = goals.filter((g) => g.period === 'day' && g.direction === 'more').reduce((n, g) => {
@@ -107,12 +122,13 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
                   const lv = level(s);
                   const isPicked = picked && dayKey(picked) === dayKey(d);
                   const isToday = dayKey(d) === dayKey(new Date());
+                  const rb = !future && rainbow[n - 1];
                   return (
-                    <button key={ci} role="gridcell" className={`mcell${future ? ' future' : ''}${isPicked ? ' picked' : ''}${isToday ? ' today' : ''}`}
+                    <button key={ci} role="gridcell" className={`mcell${rb ? ' rainbow' : ''}${future ? ' future' : ''}${isPicked ? ' picked' : ''}${isToday ? ' today' : ''}`}
                       disabled={future} onClick={() => setPicked(isPicked ? null : d)} aria-current={isToday ? 'date' : undefined}
                       style={{ background: sw.soft, color: sw.ink, '--c': sw.base } as React.CSSProperties}
-                      aria-label={`${d.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}${isToday ? tr(', heute', ', today') : ''}${lv ? (s >= 1 ? tr(', erfüllt', ', done') : '') : tr(', kein Eintrag', ', no entry')}`}>
-                      {!future && s > 0 && <span className={`cell-fill${s >= 1 ? ' chrome' : ''}`} style={{ height: `${Math.min(1, s) * 100}%` }} aria-hidden="true" />}
+                      aria-label={`${d.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}${isToday ? tr(', heute', ', today') : ''}${rb ? tr(', Regenbogentag, alle Ziele erreicht', ', rainbow day, every goal reached') : lv ? (s >= 1 ? tr(', erfüllt', ', done') : '') : tr(', kein Eintrag', ', no entry')}`}>
+                      {!future && (s > 0 || rb) && <span className={`cell-fill${rb ? ' rainbow' : s >= 1 ? ' chrome' : ''}`} style={{ height: rb ? '100%' : `${Math.min(1, s) * 100}%` }} aria-hidden="true" />}
                       <span className="mnum">{n}</span>
                     </button>
                   );
@@ -125,8 +141,8 @@ function MonthView({ month, goals, themes, logs, filterTheme }: { month: Date; g
           {activeDays === 0
             ? tr('Diesen Monat noch keine Einträge.', 'No entries this month yet.')
             : tr('de', 'en') === 'en'
-              ? <>You showed up on <b>{activeDays}</b> {activeDays === 1 ? 'day' : 'days'}{blooms > 0 && <>, reached a daily goal <b>{blooms}</b> {blooms === 1 ? 'time' : 'times'}</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> monthly {periodGoalsReached === 1 ? 'goal' : 'goals'} reached</>}.</>
-              : <>Du warst an <b>{activeDays}</b> {activeDays === 1 ? 'Tag' : 'Tagen'} dabei{blooms > 0 && <>, <b>{blooms}</b>-mal ein Tagesziel erreicht</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> {periodGoalsReached === 1 ? 'Monatsziel' : 'Monatsziele'} erreicht</>}.</>}
+              ? <>You showed up on <b>{activeDays}</b> {activeDays === 1 ? 'day' : 'days'}{blooms > 0 && <>, reached a daily goal <b>{blooms}</b> {blooms === 1 ? 'time' : 'times'}</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> monthly {periodGoalsReached === 1 ? 'goal' : 'goals'} reached</>}.{rainbowDays > 0 && <> <b className="rainbow-text">{rainbowDays} {rainbowDays === 1 ? 'rainbow day' : 'rainbow days'}</b>.</>}</>
+              : <>Du warst an <b>{activeDays}</b> {activeDays === 1 ? 'Tag' : 'Tagen'} dabei{blooms > 0 && <>, <b>{blooms}</b>-mal ein Tagesziel erreicht</>}{periodGoalsReached > 0 && <>. <b>{periodGoalsReached}</b> {periodGoalsReached === 1 ? 'Monatsziel' : 'Monatsziele'} erreicht</>}.{rainbowDays > 0 && <> <b className="rainbow-text">{rainbowDays} {rainbowDays === 1 ? 'Regenbogentag' : 'Regenbogentage'}</b>.</>}</>}
         </p>
       </section>
       {picked && <DayDetail day={picked} goals={goals} logs={mlogs} />}
