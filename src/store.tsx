@@ -3,7 +3,7 @@ import type { Data, Goal, Log, Settings, Theme } from './types';
 import { dayKey, goalProgress, periodStart } from './progress';
 import { MILESTONES, rhythm, UNIT_WORD } from './consistency';
 import { connectCloud, type Cloud } from './cloud';
-import { tr } from './i18n';
+import { tr, locale } from './i18n';
 
 const KEY = import.meta.env.VITE_DEMO ? 'werde.demo.v6' : 'werde.data.v1';
 
@@ -93,7 +93,8 @@ interface Store {
   toggleThemeOpen: (id: string) => void;
   saveGoal: (g: Goal) => void;
   deleteGoal: (id: string) => void;
-  log: (goalId: string, amount: number) => void;
+  /** at: when it happened (to note a past day); now when missing */
+  log: (goalId: string, amount: number, at?: number) => void;
   deleteLog: (id: string) => void;
   saveSettings: (s: Partial<Settings>) => void;
   toggleRestDay: (day: Date) => void;
@@ -228,8 +229,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     saveGoal: (g) => change((d) => ({ ...d, goals: upsert(d.goals, g) })),
     deleteGoal: (id) =>
       change((d) => ({ ...d, goals: d.goals.filter((g) => g.id !== id), logs: d.logs.filter((l) => l.goalId !== id) }), tr('Ziel entfernt', 'Goal removed')),
-    log: (goalId, amount) => {
-      const entry: Log = { id: uid(), goalId, amount, at: Date.now() };
+    log: (goalId, amount, at) => {
+      const entry: Log = { id: uid(), goalId, amount, at: at ?? Date.now() };
+      // noted for an earlier day: count it on that day, without celebrations or notes
+      const past = entry.at < periodStart('day').getTime();
+      if (past) {
+        const back = Math.round((periodStart('day').getTime() - periodStart('day', new Date(entry.at)).getTime()) / 86400_000);
+        const when = back === 1 ? tr('für gestern', 'for yesterday') : back === 2 ? tr('für vorgestern', 'for the day before') : `${tr('am', 'on')} ${new Date(entry.at).toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}`;
+        change((d) => ({ ...d, logs: [...d.logs, entry] }), `${tr('Nachgetragen', 'Logged')} ${when}`);
+        return;
+      }
       const goal = data.goals.find((g) => g.id === goalId);
       const nextLogs = [...data.logs, entry];
       const celebrated = { ...data.celebrated };
