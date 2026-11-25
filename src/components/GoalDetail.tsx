@@ -24,7 +24,8 @@ export function GoalDetail({ goal, onClose, onEdit }: { goal: Goal; onClose: () 
   const atFor = () => back === 0 ? undefined : new Date(day.getFullYear(), day.getMonth(), day.getDate(), now.getHours(), now.getMinutes()).getTime();
   const [amount, setAmount] = useState('');
   const [noteOpen, setNoteOpen] = useState(false);
-  const n = Number(amount.replace(',', '.'));
+  // an empty field means one step (the number shown in the field)
+  const n = amount.trim() ? Number(amount.replace(',', '.')) : goal.step;
   const r = rhythm(goal, data);
   const [, many] = UNIT_WORD[goal.period];
   const today = dayKey(day);
